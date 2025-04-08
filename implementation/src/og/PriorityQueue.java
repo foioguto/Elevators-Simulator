@@ -36,7 +36,7 @@ public class PriorityQueue {
         return first == null;
     }
 
-    public void insert(int data, int priority){
+    public boolean insert(int data, int priority){
         Node element = new Node(data, priority);
         if(isEmpty()){
             first = element;
@@ -54,6 +54,10 @@ public class PriorityQueue {
                         element.next = first;
                         last = element;
                     }
+                }
+                if(first.priority > element.priority){
+                    first.next = element;
+                    first = element;
                 }
                 if(current.priority <= element.priority){
                     if(last == current){
@@ -73,6 +77,7 @@ public class PriorityQueue {
             }
         }
         size ++;
+        return true;
     }
 
 }
