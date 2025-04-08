@@ -80,4 +80,44 @@ public class PriorityQueue {
         return true;
     }
 
+    public Node remove(){
+        Node current;
+        Node previous;
+        if(isEmpty()){
+            throw new RuntimeException("The queue is empty");
+        }else if(first == last){
+            current = first;
+            first = null;
+            last = null;
+        }else{
+            current = last;
+            previous = null;
+            for(int i=0;i<size;i++){
+                if(current == first){
+                    previous.next = null;
+                    first = previous;
+                    break;
+                }
+                previous = current;
+                current = current.next;
+            }
+        }
+        size --;
+        return current;
+    }
+
+    public Node peek(){
+        return first;
+    }
+
+    public int getSize(){
+        return this.size;
+    }
+
+    public boolean clear(){
+        first = null;
+        last = null;
+        this.size = 0;
+        return true;
+    }
 }
