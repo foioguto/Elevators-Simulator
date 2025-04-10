@@ -2,21 +2,21 @@ package og;
 
 public class PriorityQueue {
     class Node{
-        int data;
+        User user;
         int priority;
         Node next;
 
-        public Node(int data, int priority){
-            this.data = data;
+        public Node(User user, int priority){
+            this.user = user;
             this.priority = priority;
         }
 
-        public int getData() {
-            return data;
+        public User getuser() {
+            return user;
         }
 
-        public void setData(int data) {
-            this.data = data;
+        public void setuser(User user) {
+            this.user = user;
         }
 
         public int getPriority() {
@@ -36,8 +36,8 @@ public class PriorityQueue {
         return first == null;
     }
 
-    public boolean insert(int data, int priority){
-        Node element = new Node(data, priority);
+    public boolean insert(User user, int priority){
+        Node element = new Node(user, priority);
         if(isEmpty()){
             first = element;
             last = element;

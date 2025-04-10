@@ -1,9 +1,12 @@
 package og;
 
 public class Elevator {
-    Status status;
-    Direction direction;
-    Floor currentFloor;
-    Floor floorDestination;
-    PriorityQueue internalQueue;
+    private Status status;
+    private Direction direction;
+    private Floor currentFloor;
+    private Floor floorDestination;
+    private PriorityQueue internalQueue;
+
+
+
 }
