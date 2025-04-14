@@ -1,6 +1,5 @@
-package og;
-
-import og.DataEstructure.DLL;
+import DataEstructure.DLL;
+import DataEstructure.User;
 
 public class Elevator{
     private int currentFloor;
@@ -19,32 +18,54 @@ public class Elevator{
 
     }
 
-    public void wantsToEnterHere(){
-
+    public boolean wantsToEnterHereUp(Floor floor){
+        boolean ok = false;
+        for(int i = 0; i < floor.getUsers().length; i++){
+            if(floor.getUser(i).isUp()){
+                ok = true;
+            }
+        }
+        return ok;
     }
 
-    public void wantsToExitHere(){
-
+    public boolean wantsToExitHere(){
+        return currentUsers.wantsToExitHere(currentFloor);
     }
 
     public void handleDoorsAtCurrentFloor(){
 
     }
 
-    public void requestsAbove(){
-
+    public boolean requestsAbove(Building building){
+        boolean ok = false;
+        for (int i = 0 ; i<building.getFloors().length; i++){
+            if(i>currentFloor){
+                if (building.getFloor(i).users != null){
+                    ok = true;
+                }
+            }
+        }
+        return ok;
     }
 
-    public void requestsBelow(){
-
+    public boolean requestsBelow(Building building){
+        boolean ok = false;
+        for (int i = 0 ; i<building.getFloors().length; i++){
+            if(i<currentFloor){
+                if (building.getFloor(i).users != null){
+                    ok = true;
+                }
+            }
+        }
+        return ok;
     }
 
-    public void insideWantsToGoUp(){
-
+    public boolean insideWantsToGoUp(){
+        return currentUsers.insideWantsToGoUp();
     }
 
-    public void insideWantsToGoDown(){
-
+    public boolean insideWantsToGoDown(){
+        return currentUsers.insideWantsToGoDown();
     }
 
 

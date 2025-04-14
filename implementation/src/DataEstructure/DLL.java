@@ -1,6 +1,4 @@
-package og.DataEstructure;
-
-import og.User;
+package DataEstructure;
 
 public class DLL {
     class Node {
@@ -18,6 +16,8 @@ public class DLL {
         Node head;
         Node tail;
 
+    int size;
+
         // Add a node to the end of the list
         public void append(User user) {
             Node newNode = new Node(user);
@@ -28,6 +28,7 @@ public class DLL {
             tail.next = newNode;
             newNode.prev = tail;
             tail = newNode;
+            size++;
         }
 
         // Add a node to the beginning of the list
@@ -40,6 +41,7 @@ public class DLL {
             newNode.next = head;
             head.prev = newNode;
             head = newNode;
+            size++;
         }
 
         // Delete a node with a specific user
@@ -63,6 +65,7 @@ public class DLL {
                 }
                 current = current.next;
             }
+            size--;
         }
 
         // Print the list forward
@@ -86,5 +89,66 @@ public class DLL {
             }
             System.out.println();
         }
-    
+
+        public boolean wantsToExitHere(int actualFloor){
+            Node current = head;
+            boolean ok = false;
+            for (int i= 0; i < size; i++) {
+                if(current.user.getNextFloor()==actualFloor){
+                    return true;
+                }
+                current = current.next;
+            }
+            return ok;
+        }
+
+        public boolean insideWantsToGoUp(){
+            Node current = head;
+            boolean ok = false;
+            for (int i= 0; i < size; i++) {
+                if(current.user.isUp()){
+                    return true;
+                }
+                current = current.next;
+            }
+            return ok;
+        }
+
+        public boolean insideWantsToGoDown(){
+            Node current = head;
+            boolean ok = true;
+            for (int i= 0; i < size; i++) {
+                if(current.user.isUp()){
+                    return false;
+                }
+                current = current.next;
+            }
+            return ok;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public void setSize(int size) {
+            this.size = size;
+        }
+
+        public Node getHead() {
+            return head;
+        }
+
+        public void setHead(Node head) {
+            this.head = head;
+        }
+
+        public Node getTail() {
+            return tail;
+        }
+
+        public void setTail(Node tail) {
+            this.tail = tail;
+        }
+
+
 }

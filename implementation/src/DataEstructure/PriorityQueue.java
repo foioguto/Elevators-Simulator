@@ -1,6 +1,4 @@
-package og.DataEstructure;
-
-import og.User;
+package DataEstructure;
 
 public class PriorityQueue {
     class Node{

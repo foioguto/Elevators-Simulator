@@ -1,4 +1,4 @@
-package og;
+package DataEstructure;
 
 public class User {
     private int currentFloor;

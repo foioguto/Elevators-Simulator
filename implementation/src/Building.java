@@ -1,5 +1,3 @@
-package og;
-
 public class Building {
     private int totalFloors;
     private Floor[] floors;
@@ -18,5 +16,9 @@ public class Building {
 
     public Floor[] getFloors() {
         return floors;
+    }
+
+    public Floor getFloor(int i){
+        return floors[i];
     }
 }

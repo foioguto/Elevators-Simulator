@@ -1,4 +1,4 @@
-package og;
+import DataEstructure.User;
 import java.util.Random;
 
 public class Floor {
