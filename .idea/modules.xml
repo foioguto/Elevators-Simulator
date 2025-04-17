@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/implementation/implementation.iml" filepath="$PROJECT_DIR$/implementation/implementation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/elevatorsSimulator/implementation/implementation.iml" filepath="$PROJECT_DIR$/elevatorsSimulator/implementation/implementation.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/trabalho-elevador.iml" filepath="$PROJECT_DIR$/.idea/trabalho-elevador.iml" />
     </modules>
   </component>
