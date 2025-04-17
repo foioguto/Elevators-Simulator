@@ -1,3 +1,3 @@
 '''
-Make a simple explanation of the project
+To make a simple explanation of the project
 '''
