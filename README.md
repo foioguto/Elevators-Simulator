@@ -1,1 +1,3 @@
-<Post simple explanation of the project>
+'''
+Make a simple explanation of the project
+'''
