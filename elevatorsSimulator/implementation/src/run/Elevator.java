@@ -1,24 +1,50 @@
 package run;
 
+import dataStructure.InternalPanel;
 import dataStructure.Queue;
+import dataStructure.Vector;
 
 /**
  * Represents an elevator in a building simulation.
  * Manages elevator movement, user entry/exit, and direction requests.
  */
-public class Elevator {
+public class Elevator extends InternalPanel {
+    private final int maxCapacity;
+    private ElevatorState state;
     private int currentFloor;
-    private boolean up;
-    private boolean down;
     private boolean moving;
     private Queue currentUsers = new Queue();
 
+    /**
+     * Constants for the elevator.
+     */
+    public enum ElevatorState {
+        IDLE(0),
+        UP(1),
+        DOWN(-1);
+
+        private final int directionCode;
+
+        ElevatorState(int directionCode) {
+            this.directionCode = directionCode;
+        }
+
+        public int getDirectionCode;
+
+    }
+
+    public Elevator(int maxCapacity) {
+        this.currentFloor = 0;
+        this.state = ElevatorState.IDLE;
+        this.moving = false;
+        this.maxCapacity = maxCapacity;
+    }
     /**
      * Moves the elevator up one floor.
      * Updates the current floor and direction state.
      */
     public void moveUp() {
-        // Implementation to move elevator up
+        state = ElevatorState.UP;
     }
 
     /**
@@ -26,30 +52,26 @@ public class Elevator {
      * Updates the current floor and direction state.
      */
     public void moveDown() {
-        // Implementation to move elevator down
+        state = ElevatorState.DOWN;
+    }
+
+    public void stop() {
+        state = ElevatorState.IDLE;
     }
 
     /**
      * Checks if there are users waiting to go up on the specified floor.
-     * @param floor The floor to check for waiting users
+     * @param vector The floor to check for waiting users
      * @return true if at least one user wants to go up, false otherwise
      */
-    public boolean wantsToEnterHereUp(Floor floor) {
+    public boolean wantsToEnterHereUp(Vector vector) {
         boolean ok = false;
-        for(int i = 0; i < floor.getUsers().length; i++) {
-            if(floor.getUser(i).isUp()) {
+        for(int i = 0; i < vector.getUsers().length; i++) {
+            if(vector.getUser(i).isUp()) {
                 ok = true;
             }
         }
         return ok;
-    }
-
-    /**
-     * Checks if any current passengers want to exit at the current floor.
-     * @return true if at least one passenger wants to exit, false otherwise
-     */
-    public boolean wantsToExitHere() {
-        return currentUsers.wantsToExitHere(currentFloor);
     }
 
     /**
@@ -94,22 +116,6 @@ public class Elevator {
         return ok;
     }
 
-    /**
-     * Checks if any passengers inside want to go up.
-     * @return true if at least one passenger wants to go up, false otherwise
-     */
-    public boolean insideWantsToGoUp() {
-        return currentUsers.insideWantsToGoUp();
-    }
-
-    /**
-     * Checks if all passengers inside want to go down.
-     * @return true if all passengers want to go down, false otherwise
-     */
-    public boolean insideWantsToGoDown() {
-        return currentUsers.insideWantsToGoDown();
-    }
-
     // Getters and Setters
 
     /**
@@ -129,54 +135,6 @@ public class Elevator {
     }
 
     /**
-     * Checks if the elevator is going up.
-     * @return true if going up, false otherwise
-     */
-    public boolean isUp() {
-        return up;
-    }
-
-    /**
-     * Sets the elevator's upward direction.
-     * @param up true to set direction to up, false otherwise
-     */
-    public void setUp(boolean up) {
-        this.up = up;
-    }
-
-    /**
-     * Checks if the elevator is going down.
-     * @return true if going down, false otherwise
-     */
-    public boolean isDown() {
-        return down;
-    }
-
-    /**
-     * Sets the elevator's downward direction.
-     * @param down true to set direction to down, false otherwise
-     */
-    public void setDown(boolean down) {
-        this.down = down;
-    }
-
-    /**
-     * Checks if the elevator is currently moving.
-     * @return true if moving, false if stationary
-     */
-    public boolean isMoving() {
-        return moving;
-    }
-
-    /**
-     * Sets the elevator's moving state.
-     * @param moving true to set as moving, false to set as stationary
-     */
-    public void setMoving(boolean moving) {
-        this.moving = moving;
-    }
-
-    /**
      * Gets the queue of current passengers in the elevator.
      * @return The Queue object containing current passengers
      */
@@ -191,4 +149,25 @@ public class Elevator {
     public void setCurrentUsers(Queue currentUsers) {
         this.currentUsers = currentUsers;
     }
+
+    public ElevatorState getState() {
+        return state;
+    }
+
+    public void setState(ElevatorState state) {
+        this.state = state;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
 }

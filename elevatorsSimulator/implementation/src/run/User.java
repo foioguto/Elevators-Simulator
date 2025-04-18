@@ -1,7 +1,7 @@
 /**
  * This package contains data structures for managing elevator simulations.
  */
-package dataStructure;
+package run;
 
 
 public class User {

@@ -1,4 +1,4 @@
-package run.panel;
+package dataStructure;
 
 public class ExternalPanel {
 }

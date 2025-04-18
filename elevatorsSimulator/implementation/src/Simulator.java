@@ -1,6 +1,6 @@
-import run.Floor;
+import dataStructure.Vector;
 
 public class Simulator {
-    Floor floors[];
+    Vector vectors[];
 
 }

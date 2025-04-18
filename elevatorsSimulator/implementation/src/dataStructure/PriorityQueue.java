@@ -3,6 +3,8 @@
  */
 package dataStructure;
 
+import run.User;
+
 /**
  * A priority queue implementation that manages users based on their priority.
  * The queue is implemented as a linked list where nodes are ordered by priority.

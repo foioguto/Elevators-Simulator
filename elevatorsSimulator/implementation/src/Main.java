@@ -1,5 +1,5 @@
 import dataStructure.Queue;
-import dataStructure.User;
+import run.User;
 
 public class Main {
     public static void main(String[] args) {

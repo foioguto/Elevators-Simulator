@@ -3,6 +3,8 @@
  */
 package dataStructure;
 
+import run.User;
+
 public class Queue {
     /**
      * A node in the queue that holds a user and links to adjacent nodes.
@@ -39,7 +41,6 @@ public class Queue {
      * @param user The user to add
      */
 
-    //TODO check this method
     public boolean append(User user) {
         Node newNode = new Node(user);
         if (head == null) {
@@ -130,52 +131,6 @@ public class Queue {
     }
 
     /**
-     * Checks if any user in the queue wants to exit at the specified floor.
-     * @param actualFloor The floor to check
-     * @return true if at least one user wants to exit at this floor
-     */
-    public boolean wantsToExitHere(int actualFloor) {
-        Node current = head;
-        for (int i = 0; i < size; i++) {
-            if(current.user.getNextFloor() == actualFloor) {
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if any user in the queue wants to go up.
-     * @return true if at least one user wants to go up
-     */
-    public boolean insideWantsToGoUp() {
-        Node current = head;
-        for (int i = 0; i < size; i++) {
-            if(current.user.isUp()) {
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if all users in the queue want to go down.
-     * @return true if all users want to go down
-     */
-    public boolean insideWantsToGoDown() {
-        Node current = head;
-        for (int i = 0; i < size; i++) {
-            if(current.user.isUp()) {
-                return false;
-            }
-            current = current.next;
-        }
-        return true;
-    }
-
-    /**
      * Gets the current size of the queue.
      * @return The number of elements in the queue
      */
@@ -223,8 +178,3 @@ public class Queue {
         this.tail = tail;
     }
 }
-
-/*
-  Represents a user in the elevator simulation system.
-  Stores information about the user's current floor, destination floor, and direction.
- */

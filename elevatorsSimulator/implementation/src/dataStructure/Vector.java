@@ -1,22 +1,23 @@
-package run;
+package dataStructure;
 
-import dataStructure.User;
+import run.User;
+
 import java.util.Random;
 
 /**
- * Represents a floor in a building with potential elevator users.
- * Manages users waiting on the floor and their destination requests.
+ * Represents the people inside the elevator
+ * Manages users in the elevator and their destination requests.
  */
-public class Floor {
+public class Vector {
     private int floor;
     private User[] users;
     private Random rand;
 
     /**
-     * Constructs a new Floor with the specified floor number.
+     * Constructs a new Vector with the specified vector number.
      * @param floor The floor number (0-based index)
      */
-    public Floor(int floor) {
+    public Vector(int floor) {
         this.floor = floor;
         this.rand = new Random(); // Initialize Random here for consistent usage
         this.users = new User[0]; // Initialize empty array to prevent NPE
