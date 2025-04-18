@@ -27,20 +27,34 @@ public class Queue {
     Node tail;
     int size;
 
+    public Queue() {
+        this.head = null;
+        this.tail = null;
+        size = 0;
+    }
+
+
     /**
      * Adds a user to the end of the queue.
      * @param user The user to add
      */
-    public void append(User user) {
+
+    //TODO check this method
+    public boolean append(User user) {
         Node newNode = new Node(user);
         if (head == null) {
             head = tail = newNode;
-            return;
+        }
+        Node actual = new Node(user);
+        actual = head;
+        while(actual.next != null) {
+            actual = actual.next;
         }
         tail.next = newNode;
         newNode.prev = tail;
         tail = newNode;
         size++;
+        return true;
     }
 
     /**
@@ -63,10 +77,11 @@ public class Queue {
      * Deletes the first occurrence of the specified user from the queue.
      * @param user The user to delete
      */
-    public void delete(User user) {
+    public boolean delete(User user) {
         Node current = head;
+
         while (current != null) {
-            if (current.user == user) {
+            if (current.user.equals(user)) {
                 if (current.prev != null) {
                     current.prev.next = current.next;
                 } else {
@@ -78,14 +93,17 @@ public class Queue {
                 } else {
                     tail = current.prev;
                 }
+
                 size--;
-                return;
+                return true;
             }
+
             current = current.next;
         }
+        return false;
     }
 
-    /**
+    /*
      * Prints the queue from head to tail.
      */
     public void printForward() {

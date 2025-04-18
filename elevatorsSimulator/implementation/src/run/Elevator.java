@@ -69,7 +69,7 @@ public class Elevator {
         boolean ok = false;
         for (int i = 0; i < building.getFloors().length; i++) {
             if(i > currentFloor) {
-                if (building.getFloor(i).users != null) {
+                if (building.getFloor(i).getUser(i) != null) {
                     ok = true;
                 }
             }
@@ -86,7 +86,7 @@ public class Elevator {
         boolean ok = false;
         for (int i = 0; i < building.getFloors().length; i++) {
             if(i < currentFloor) {
-                if (building.getFloor(i).users != null) {
+                if (building.getFloor(i).getUser(i) != null) {
                     ok = true;
                 }
             }
