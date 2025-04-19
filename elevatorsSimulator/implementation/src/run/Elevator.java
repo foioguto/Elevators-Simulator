@@ -1,7 +1,7 @@
 package run;
 
 import dataStructure.InternalPanel;
-import dataStructure.Queue;
+import dataStructure.List;
 import dataStructure.Vector;
 
 /**
@@ -13,7 +13,7 @@ public class Elevator extends InternalPanel {
     private ElevatorState state;
     private int currentFloor;
     private boolean moving;
-    private Queue currentUsers = new Queue();
+    private List currentUsers = new List();
 
     /**
      * Constants for the elevator.
@@ -78,8 +78,9 @@ public class Elevator extends InternalPanel {
      * Handles door operations at the current floor.
      * Manages the opening/closing of doors and passenger flow.
      */
-    public void handleDoorsAtCurrentFloor() {
-        // Implementation for door handling
+    public void handleDoorsAtCurrentFloor(Vector vector) {
+        currentUsers.detectExitRequests(this.currentFloor);
+        vector.getEveryoneInside(this.currentUsers);
     }
 
     /**
@@ -138,7 +139,7 @@ public class Elevator extends InternalPanel {
      * Gets the queue of current passengers in the elevator.
      * @return The Queue object containing current passengers
      */
-    public Queue getCurrentUsers() {
+    public List getCurrentUsers() {
         return currentUsers;
     }
 
@@ -146,7 +147,7 @@ public class Elevator extends InternalPanel {
      * Sets the queue of current passengers in the elevator.
      * @param currentUsers The new Queue of passengers
      */
-    public void setCurrentUsers(Queue currentUsers) {
+    public void setCurrentUsers(List currentUsers) {
         this.currentUsers = currentUsers;
     }
 

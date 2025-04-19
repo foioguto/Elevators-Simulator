@@ -5,7 +5,7 @@ package dataStructure;
 
 import run.User;
 
-public class Queue {
+public class List {
     /**
      * A node in the queue that holds a user and links to adjacent nodes.
      */
@@ -29,7 +29,7 @@ public class Queue {
     Node tail;
     int size;
 
-    public Queue() {
+    public List() {
         this.head = null;
         this.tail = null;
         size = 0;
@@ -102,6 +102,32 @@ public class Queue {
             current = current.next;
         }
         return false;
+    }
+
+    public void detectExitRequests(int currentFloor) {
+        Node current = head;
+
+        while (current != null) {
+            Node nextNode = current.next;
+
+            if (current.user.getNextFloor() == currentFloor) {
+                if (current.prev != null) {
+                    current.prev.next = current.next;
+                } else {
+                    head = current.next;
+                }
+
+                if (current.next != null) {
+                    current.next.prev = current.prev;
+                } else {
+                    tail = current.prev;
+                }
+
+                size--;
+            }
+
+            current = nextNode;
+        }
     }
 
     /*

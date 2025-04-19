@@ -91,6 +91,18 @@ public class Vector {
         return false;
     }
 
+    public void getEveryoneInside(List list) {
+        if (users == null || users.length == 0) {
+            return;
+        }
+
+        for (User user : users) {
+            if (user != null) {
+                list.append(user);
+            }
+        }
+    }
+
     // Getters and Setters
 
     /**
