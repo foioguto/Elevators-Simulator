@@ -1,6 +1,10 @@
 package dataStructure;
 
 public class InternalPanel extends List {
+
+    public InternalPanel() {
+    }
+
     /**
      * Checks if any user in the queue wants to exit at the specified floor.
      * @param actualFloor The floor to check

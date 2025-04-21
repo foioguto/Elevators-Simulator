@@ -14,6 +14,7 @@ public class Elevator extends InternalPanel {
     private int currentFloor;
     private boolean moving;
     private List currentUsers = new List();
+    private int sleepMode = 0;
 
     /**
      * Constants for the elevator.
@@ -43,16 +44,70 @@ public class Elevator extends InternalPanel {
      * Moves the elevator up one floor.
      * Updates the current floor and direction state.
      */
-    public void moveUp() {
+    public void moveUp(Building building) {
+        InternalPanel panel = new InternalPanel();
         state = ElevatorState.UP;
+        boolean keepGoing = true;
+        if (checkSleepMode()){
+            stop();
+            keepGoing = false;
+        }else {
+            keepGoing = true;
+        }
+        while (keepGoing) {
+            if(wantsToEnterHere(building.getFloor(currentFloor)) || panel.wantsToExitHere(building.getFloor(currentFloor).getFloor())){
+                handleDoorsAtCurrentFloor(building.getFloor(currentFloor));
+            }else{
+                if(requestsAbove(building) || panel.insideWantsToGoUp()){
+                    return;
+                }else{
+                    keepGoing = false;
+                    sleepMode += 1;
+                    moveDown(building);
+                    break;
+                }
+            }
+            currentFloor++;
+        }
     }
 
     /**
      * Moves the elevator down one floor.
      * Updates the current floor and direction state.
      */
-    public void moveDown() {
+    public void moveDown(Building building) {
+        InternalPanel panel = new InternalPanel();
         state = ElevatorState.DOWN;
+        boolean keepGoing = true;
+        if (checkSleepMode()){
+            stop();
+            keepGoing = false;
+        }else {
+            keepGoing = true;
+        }
+        while (keepGoing) {
+            if(wantsToEnterHere(building.getFloor(currentFloor)) || panel.wantsToExitHere(building.getFloor(currentFloor).getFloor())){
+                handleDoorsAtCurrentFloor(building.getFloor(currentFloor));
+            }else{
+                if(requestsBelow(building) || panel.insideWantsToGoDown()){
+                    return;
+                }else{
+                    keepGoing = false;
+                    sleepMode += 1;
+                    moveUp(building);
+                    break;
+                }
+            }
+            currentFloor--;
+        }
+    }
+
+    public boolean checkSleepMode(){
+        if(sleepMode == 2){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public void stop() {
@@ -64,7 +119,7 @@ public class Elevator extends InternalPanel {
      * @param vector The floor to check for waiting users
      * @return true if at least one user wants to go up, false otherwise
      */
-    public boolean wantsToEnterHereUp(Vector vector) {
+    public boolean wantsToEnterHere(Vector vector) {
         boolean ok = false;
         for(int i = 0; i < vector.getUsers().length; i++) {
             if(vector.getUser(i).isUp()) {
