@@ -98,9 +98,10 @@ public class Vector {
             return;
         }
 
-        for (User user : users) {
-            if (user != null) {
-                list.append(user);
+        for (int i = 0; i < users.length; i++) {
+            if (users[i] != null) {
+                list.append(users[i]);
+                users[i] = null;
             }
         }
     }

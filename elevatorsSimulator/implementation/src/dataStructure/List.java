@@ -45,15 +45,11 @@ public class List {
         Node newNode = new Node(user);
         if (head == null) {
             head = tail = newNode;
+        } else {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
         }
-        Node actual = new Node(user);
-        actual = head;
-        while(actual.next != null) {
-            actual = actual.next;
-        }
-        tail.next = newNode;
-        newNode.prev = tail;
-        tail = newNode;
         size++;
         return true;
     }

@@ -15,6 +15,7 @@ public class Elevator extends InternalPanel {
     private boolean moving;
     private List currentUsers = new List();
     private int sleepMode = 0;
+    InternalPanel panel = new InternalPanel();
 
     /**
      * Constants for the elevator.
@@ -45,73 +46,100 @@ public class Elevator extends InternalPanel {
      * Updates the current floor and direction state.
      */
     public void moveUp(Building building) {
-        InternalPanel panel = new InternalPanel();
         state = ElevatorState.UP;
         boolean keepGoing = true;
-        if (checkSleepMode()){
+
+        if (checkSleepMode()) {
             stop();
-            keepGoing = false;
-        }else {
-            keepGoing = true;
+            return;
         }
-        while (keepGoing) {
-            if(wantsToEnterHere(building.getFloor(currentFloor)) || panel.wantsToExitHere(building.getFloor(currentFloor).getFloor())){
-                handleDoorsAtCurrentFloor(building.getFloor(currentFloor));
-            }else{
-                if(requestsAbove(building) || panel.insideWantsToGoUp()){
-                    return;
-                }else{
-                    keepGoing = false;
-                    sleepMode += 1;
+
+        while (keepGoing && currentFloor < building.getTotalFloors()) {
+
+            Vector floor = building.getFloor(currentFloor);
+
+            boolean wantsToEnter = wantsToEnterHere(floor);
+            boolean wantsToExit = panel.wantsToExitHere(currentFloor);
+            boolean someoneAbove = requestsAbove(building);
+            boolean insideWantsUp = panel.insideWantsToGoUp();
+
+            if (wantsToEnter || wantsToExit) {
+                handleDoorsAtCurrentFloor(floor);
+
+                wantsToEnter = wantsToEnterHere(floor);
+                wantsToExit = panel.wantsToExitHere(currentFloor);
+                someoneAbove = requestsAbove(building);
+                insideWantsUp = panel.insideWantsToGoUp();
+
+                if (!wantsToEnter && !wantsToExit && !someoneAbove && !insideWantsUp) {
+                    sleepMode++;
                     moveDown(building);
                     break;
                 }
+            } else if (!someoneAbove && !insideWantsUp) {
+                sleepMode++;
+                moveDown(building);
+                break;
             }
+
             currentFloor++;
         }
     }
+
+
 
     /**
      * Moves the elevator down one floor.
      * Updates the current floor and direction state.
      */
     public void moveDown(Building building) {
-        InternalPanel panel = new InternalPanel();
         state = ElevatorState.DOWN;
         boolean keepGoing = true;
-        if (checkSleepMode()){
+
+        if (checkSleepMode()) {
             stop();
-            keepGoing = false;
-        }else {
-            keepGoing = true;
+            return;
         }
-        while (keepGoing) {
-            if(wantsToEnterHere(building.getFloor(currentFloor)) || panel.wantsToExitHere(building.getFloor(currentFloor).getFloor())){
-                handleDoorsAtCurrentFloor(building.getFloor(currentFloor));
-            }else{
-                if(requestsBelow(building) || panel.insideWantsToGoDown()){
-                    return;
-                }else{
-                    keepGoing = false;
-                    sleepMode += 1;
+
+        while (keepGoing && currentFloor >= 0) {
+
+            Vector floor = building.getFloor(currentFloor);
+
+            boolean wantsToEnter = wantsToEnterHere(floor);
+            boolean wantsToExit = panel.wantsToExitHere(currentFloor);
+            boolean someoneBelow = requestsBelow(building);
+            boolean insideWantsDown = panel.insideWantsToGoDown();
+
+            if (wantsToEnter || wantsToExit) {
+                handleDoorsAtCurrentFloor(floor);
+
+                wantsToEnter = wantsToEnterHere(floor);
+                wantsToExit = panel.wantsToExitHere(currentFloor);
+                someoneBelow = requestsBelow(building);
+                insideWantsDown = panel.insideWantsToGoDown();
+
+                if (!wantsToEnter && !wantsToExit && !someoneBelow && !insideWantsDown) {
+                    sleepMode++;
                     moveUp(building);
                     break;
                 }
+            } else if (!someoneBelow && !insideWantsDown) {
+                sleepMode++;
+                moveUp(building);
+                break;
             }
+
             currentFloor--;
         }
     }
 
-    public boolean checkSleepMode(){
-        if(sleepMode == 2){
-            return true;
-        }else{
-            return false;
-        }
+    public boolean checkSleepMode() {
+        return sleepMode == 2;
     }
 
     public void stop() {
         state = ElevatorState.IDLE;
+        System.out.println("Elevador entrou em modo de espera no andar " + currentFloor);
     }
 
     /**
@@ -120,13 +148,13 @@ public class Elevator extends InternalPanel {
      * @return true if at least one user wants to go up, false otherwise
      */
     public boolean wantsToEnterHere(Vector vector) {
-        boolean ok = false;
-        for(int i = 0; i < vector.getUsers().length; i++) {
-            if(vector.getUser(i).isUp()) {
-                ok = true;
+        for (int i = 0; i < vector.getUsers().length; i++) {
+            User user = vector.getUser(i);
+            if (user != null) {
+                return true;
             }
         }
-        return ok;
+        return false;
     }
 
     /**
@@ -144,15 +172,17 @@ public class Elevator extends InternalPanel {
      * @return true if there are requests above, false otherwise
      */
     public boolean requestsAbove(Building building) {
-        boolean ok = false;
-        for (int i = 0; i < building.getFloors().length; i++) {
-            if(i > currentFloor) {
-                if (building.getFloor(i).getUser(i) != null) {
-                    ok = true;
+        for (int i = currentFloor + 1; i < building.getFloors().length; i++) {
+            User[] users = building.getFloor(i).getUsers();
+            if (users != null) {
+                for (User user : users) {
+                    if (user != null) {
+                        return true;
+                    }
                 }
             }
         }
-        return ok;
+        return false;
     }
 
     /**
@@ -161,15 +191,23 @@ public class Elevator extends InternalPanel {
      * @return true if there are requests below, false otherwise
      */
     public boolean requestsBelow(Building building) {
-        boolean ok = false;
         for (int i = 0; i < building.getFloors().length; i++) {
-            if(i < currentFloor) {
-                if (building.getFloor(i).getUser(i) != null) {
-                    ok = true;
+            if (i < currentFloor) {
+                Vector floor = building.getFloor(i);
+                User[] users = floor.getUsers();
+
+                if (users != null) {
+                    for (User user : users) {
+                        if (user != null) {
+                            if (!user.isUp()) {
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
         }
-        return ok;
+        return false;
     }
 
     // Getters and Setters

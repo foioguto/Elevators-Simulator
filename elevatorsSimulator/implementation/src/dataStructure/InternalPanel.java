@@ -39,13 +39,15 @@ public class InternalPanel extends List {
      */
     public boolean insideWantsToGoDown() {
         List.Node current = head;
-        for (int i = 0; i < size; i++) {
-            if(current.user.isUp()) {
-                return false;
+
+        while (current != null) {
+            if (!current.user.isUp()) {
+                return true;
             }
             current = current.next;
         }
-        return true;
+
+        return false;
     }
 
 }

@@ -12,7 +12,7 @@ public class Simulator {
 
     public void startBuildingRandom(){
         int min = 2;
-        int floorsNumber = 2 + random.nextInt(8);
+        int floorsNumber = 2 + random.nextInt(3);
         this.building = new Building(floorsNumber);
     }
 
@@ -30,6 +30,10 @@ public class Simulator {
     public void setElevators(){
         elevator = new Elevator(8);
         building.setElevator(elevator);
+    }
+
+    public void startElevator(){
+        elevator.moveUp(building);
     }
 
 }
