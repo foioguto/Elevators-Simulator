@@ -32,27 +32,29 @@ public class Vector {
      * @throws IllegalArgumentException if usersQuantity is negative
      * @throws ArrayIndexOutOfBoundsException if users array isn't properly initialized
      */
-    public void setUsers(int usersQuantity, int totalFloors) {
+    public void setUsers(int usersQuantity, int totalFloors, int actualFloor) {
         if (usersQuantity < 0) {
             throw new IllegalArgumentException("User quantity cannot be negative");
         }
 
-        this.users = new User[usersQuantity]; // Initialize array with proper size
+        if (totalFloors < 2) {
+            throw new IllegalArgumentException("There must be at least 2 floors to have valid destinations.");
+        }
+
+        this.users = new User[usersQuantity];
+        Random rand = new Random();
 
         for (int i = 0; i < usersQuantity; i++) {
-            boolean up = rand.nextBoolean();
-            int destination;
+            int currentFloor, destinationFloor;
 
-            // Ensure destination is different from current floor
             do {
-                if (up) {
-                    destination = rand.nextInt(floor + 1, totalFloors);
-                } else {
-                    destination = rand.nextInt(0, floor);
-                }
-            } while (destination == floor);
+                currentFloor = actualFloor;
+                destinationFloor = rand.nextInt(totalFloors);
+            } while (currentFloor == destinationFloor);
 
-            this.users[i] = new User(this.floor, destination, up);
+            boolean up = destinationFloor > currentFloor;
+
+            this.users[i] = new User(currentFloor, destinationFloor, up);
         }
     }
 
