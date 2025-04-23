@@ -10,38 +10,43 @@ public class InternalPanel extends List {
      * @param actualFloor The floor to check
      * @return true if at least one user wants to exit at this floor
      */
-    public boolean wantsToExitHere(int actualFloor) {
-        List.Node current = head;
-        for (int i = 0; i < size; i++) {
-            if(current.user.getNextFloor() == actualFloor) {
+    public boolean wantsToExitHere(List currentUsers, int actualFloor) {
+        List.Node current = currentUsers.getHead();
+
+        while (current != null) {
+            if (current.user.getNextFloor() == actualFloor) {
                 return true;
             }
             current = current.next;
         }
+
         return false;
     }
 
 
-    public boolean insideWantsToGoUp() {
-        List.Node current = head;
-        for (int i = 0; i < size; i++) {
-            if(current.user.isUp()) {
+    public boolean insideWantsToGoUp(List currentUsers, int currentFloor) {
+        List.Node current = currentUsers.getHead();
+
+        while (current != null) {
+            if (current.user.getNextFloor() > currentFloor) {
                 return true;
             }
             current = current.next;
         }
+
         return false;
     }
+
 
     /**
      * Checks if all users in the queue want to go down.
      * @return true if all users want to go down
      */
-    public boolean insideWantsToGoDown() {
-        List.Node current = head;
+    public boolean insideWantsToGoDown(List currentUsers, int currentFloor) {
+        List.Node current = currentUsers.getHead();
 
         while (current != null) {
-            if (!current.user.isUp()) {
+            if (current.user.getNextFloor() < currentFloor) {
                 return true;
             }
             current = current.next;

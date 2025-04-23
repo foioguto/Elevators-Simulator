@@ -59,17 +59,17 @@ public class Elevator extends InternalPanel {
             Vector floor = building.getFloor(currentFloor);
 
             boolean wantsToEnter = wantsToEnterHere(floor);
-            boolean wantsToExit = panel.wantsToExitHere(currentFloor);
+            boolean wantsToExit = panel.wantsToExitHere(currentUsers, currentFloor);
             boolean someoneAbove = requestsAbove(building);
-            boolean insideWantsUp = panel.insideWantsToGoUp();
+            boolean insideWantsUp = panel.insideWantsToGoUp(currentUsers, currentFloor);
 
             if (wantsToEnter || wantsToExit) {
                 handleDoorsAtCurrentFloor(floor);
 
                 wantsToEnter = wantsToEnterHere(floor);
-                wantsToExit = panel.wantsToExitHere(currentFloor);
+                wantsToExit = panel.wantsToExitHere(currentUsers,currentFloor);
                 someoneAbove = requestsAbove(building);
-                insideWantsUp = panel.insideWantsToGoUp();
+                insideWantsUp = panel.insideWantsToGoUp(currentUsers, currentFloor);
 
                 if (!wantsToEnter && !wantsToExit && !someoneAbove && !insideWantsUp) {
                     sleepMode++;
@@ -106,17 +106,17 @@ public class Elevator extends InternalPanel {
             Vector floor = building.getFloor(currentFloor);
 
             boolean wantsToEnter = wantsToEnterHere(floor);
-            boolean wantsToExit = panel.wantsToExitHere(currentFloor);
+            boolean wantsToExit = panel.wantsToExitHere(currentUsers,currentFloor);
             boolean someoneBelow = requestsBelow(building);
-            boolean insideWantsDown = panel.insideWantsToGoDown();
+            boolean insideWantsDown = panel.insideWantsToGoDown(currentUsers, currentFloor);
 
             if (wantsToEnter || wantsToExit) {
                 handleDoorsAtCurrentFloor(floor);
 
                 wantsToEnter = wantsToEnterHere(floor);
-                wantsToExit = panel.wantsToExitHere(currentFloor);
+                wantsToExit = panel.wantsToExitHere(currentUsers,currentFloor);
                 someoneBelow = requestsBelow(building);
-                insideWantsDown = panel.insideWantsToGoDown();
+                insideWantsDown = panel.insideWantsToGoDown(currentUsers, currentFloor);
 
                 if (!wantsToEnter && !wantsToExit && !someoneBelow && !insideWantsDown) {
                     sleepMode++;

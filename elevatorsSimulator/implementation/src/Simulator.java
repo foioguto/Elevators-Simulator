@@ -23,7 +23,7 @@ public class Simulator {
     public void setUsersBuilding(){
         for(int i=0; i<building.getFloors().length; i++){
             building.getFloors()[i] = new Vector(i);
-            building.getFloors()[i].setUsers(random.nextInt(5), building.getTotalFloors(), building.getFloors()[i].getFloor());
+            building.getFloors()[i].setUsers(random.nextInt(4), building.getTotalFloors(), building.getFloors()[i].getFloor());
         }
     }
 
