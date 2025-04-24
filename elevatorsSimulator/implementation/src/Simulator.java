@@ -1,11 +1,11 @@
-import dataStructure.Vector;
+import dataStructure.Floor;
 import run.Building;
 import run.Elevator;
 
 import java.util.Random;
 
 public class Simulator {
-    Vector vectors[];
+    Floor floors[];
     Random random = new Random();
     Building building;
     Elevator elevator;
@@ -22,7 +22,7 @@ public class Simulator {
 
     public void setUsersBuilding(){
         for(int i=0; i<building.getFloors().length; i++){
-            building.getFloors()[i] = new Vector(i);
+            building.getFloors()[i] = new Floor(i);
             building.getFloors()[i].setUsers(random.nextInt(4), building.getTotalFloors(), building.getFloors()[i].getFloor());
         }
     }
@@ -34,6 +34,35 @@ public class Simulator {
 
     public void startElevator(){
         elevator.moveUp(building);
+    }
+
+    public void generateNewUserRequests() {
+        for (int i = 0; i < building.getFloors().length; i++) {
+            Floor floor = building.getFloors()[i];
+
+            // Adiciona novos usuários sem apagar os anteriores
+            int newUsers = random.nextInt(3); // até 2 novos usuários
+            floor.setAdditionalUsers(newUsers, building.getTotalFloors(), i);
+        }
+    }
+
+    public void simulateElevatorRuns(int times) {
+        System.out.println("🔁 Iniciando simulação com " + times + " ciclos de elevador...\n");
+
+        for (int i = 1; i <= times; i++) {
+            System.out.println("========== CICLO #" + i + " ==========");
+
+            // Gera novas solicitações de usuários sem apagar os existentes
+            generateNewUserRequests();
+
+            // Elevador começa no andar atual (sem resetar)
+            elevator.moveUp(building);
+            elevator.resetSleepMode();
+
+            System.out.println("========== FIM DO CICLO #" + i + " ==========\n");
+        }
+
+        System.out.println("✅ Simulação finalizada.");
     }
 
 }

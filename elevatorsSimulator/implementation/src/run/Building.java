@@ -1,6 +1,6 @@
 package run;
 
-import dataStructure.Vector;
+import dataStructure.Floor;
 
 /**
  * Represents a building with multiple floors and elevators.
@@ -8,7 +8,7 @@ import dataStructure.Vector;
  */
 public class Building {
     private int totalFloors;
-    private Vector[] vectors;
+    private Floor[] floors;
     private Elevator elevator;
 
     public void setElevator(Elevator elevator1) {
@@ -32,7 +32,7 @@ public class Building {
      */
     public Building(int totalFloors) {
         this.totalFloors = totalFloors;
-        this.vectors = new Vector[totalFloors];
+        this.floors = new Floor[totalFloors];
     }
 
     /**
@@ -40,8 +40,8 @@ public class Building {
      *
      * @return The array of Floor objects representing all floors
      */
-    public Vector[] getFloors() {
-        return vectors;
+    public Floor[] getFloors() {
+        return floors;
     }
 
     /**
@@ -51,7 +51,7 @@ public class Building {
      * @return The Floor object at the specified index
      * @throws ArrayIndexOutOfBoundsException if the index is out of bounds
      */
-    public Vector getFloor(int i) {
-        return vectors[i];
+    public Floor getFloor(int i) {
+        return floors[i];
     }
 }

@@ -1,17 +1,24 @@
 package dataStructure;
 
-public class InternalPanel extends List {
+/**
+ * InternalPanel is responsible for handling internal elevator requests
+ * made by passengers already inside the elevator.
+ */
+public class InternalPanel {
 
     public InternalPanel() {
+        // No specific initialization required
     }
 
     /**
-     * Checks if any user in the queue wants to exit at the specified floor.
-     * @param actualFloor The floor to check
-     * @return true if at least one user wants to exit at this floor
+     * Checks if any passenger inside the elevator wants to exit at the current floor.
+     *
+     * @param currentUsers List of users currently in the elevator.
+     * @param actualFloor The current floor of the elevator.
+     * @return true if at least one user wants to exit here.
      */
-    public boolean wantsToExitHere(List currentUsers, int actualFloor) {
-        List.Node current = currentUsers.getHead();
+    public boolean wantsToExitHere(DoubleLinkedList currentUsers, int actualFloor) {
+        DoubleLinkedList.Node current = currentUsers.getHead();
 
         while (current != null) {
             if (current.user.getNextFloor() == actualFloor) {
@@ -23,9 +30,15 @@ public class InternalPanel extends List {
         return false;
     }
 
-
-    public boolean insideWantsToGoUp(List currentUsers, int currentFloor) {
-        List.Node current = currentUsers.getHead();
+    /**
+     * Checks if any passenger inside the elevator wants to go to a higher floor.
+     *
+     * @param currentUsers List of users currently in the elevator.
+     * @param currentFloor The current floor of the elevator.
+     * @return true if at least one user wants to go up.
+     */
+    public boolean insideWantsToGoUp(DoubleLinkedList currentUsers, int currentFloor) {
+        DoubleLinkedList.Node current = currentUsers.getHead();
 
         while (current != null) {
             if (current.user.getNextFloor() > currentFloor) {
@@ -37,13 +50,15 @@ public class InternalPanel extends List {
         return false;
     }
 
-
     /**
-     * Checks if all users in the queue want to go down.
-     * @return true if all users want to go down
+     * Checks if any passenger inside the elevator wants to go to a lower floor.
+     *
+     * @param currentUsers List of users currently in the elevator.
+     * @param currentFloor The current floor of the elevator.
+     * @return true if at least one user wants to go down.
      */
-    public boolean insideWantsToGoDown(List currentUsers, int currentFloor) {
-        List.Node current = currentUsers.getHead();
+    public boolean insideWantsToGoDown(DoubleLinkedList currentUsers, int currentFloor) {
+        DoubleLinkedList.Node current = currentUsers.getHead();
 
         while (current != null) {
             if (current.user.getNextFloor() < currentFloor) {
@@ -54,5 +69,4 @@ public class InternalPanel extends List {
 
         return false;
     }
-
 }

@@ -1,23 +1,20 @@
-/**
- * This package contains data structures for managing elevator simulations.
- */
 package dataStructure;
 
 import run.User;
 
-public class List {
+/**
+ * Represents a queue of users on a floor using a doubly linked list.
+ */
+public class DoubleLinkedList {
+
     /**
-     * A node in the queue that holds a user and links to adjacent nodes.
+     * Node represents each user in the queue.
      */
     class Node {
         User user;
         Node next;
         Node prev;
 
-        /**
-         * Creates a new Node with the specified user.
-         * @param user The user to be stored in the node
-         */
         Node(User user) {
             this.user = user;
             this.next = null;
@@ -25,22 +22,22 @@ public class List {
         }
     }
 
-    Node head;
-    Node tail;
-    int size;
+    private Node head;
+    private Node tail;
+    private int size;
 
-    public List() {
+    public DoubleLinkedList() {
         this.head = null;
         this.tail = null;
-        size = 0;
+        this.size = 0;
     }
-
 
     /**
      * Adds a user to the end of the queue.
-     * @param user The user to add
+     *
+     * @param user The user to add.
+     * @return true if the user was added.
      */
-
     public boolean append(User user) {
         Node newNode = new Node(user);
         if (head == null) {
@@ -55,24 +52,10 @@ public class List {
     }
 
     /**
-     * Adds a user to the beginning of the queue.
-     * @param user The user to add
-     */
-    public void prepend(User user) {
-        Node newNode = new Node(user);
-        if (head == null) {
-            head = tail = newNode;
-            return;
-        }
-        newNode.next = head;
-        head.prev = newNode;
-        head = newNode;
-        size++;
-    }
-
-    /**
-     * Deletes the first occurrence of the specified user from the queue.
-     * @param user The user to delete
+     * Removes the first occurrence of a user from the queue.
+     *
+     * @param user The user to remove.
+     * @return true if the user was found and removed.
      */
     public boolean delete(User user) {
         Node current = head;
@@ -94,12 +77,17 @@ public class List {
                 size--;
                 return true;
             }
-
             current = current.next;
         }
+
         return false;
     }
 
+    /**
+     * Removes all users whose destination is the current floor.
+     *
+     * @param currentFloor The floor the elevator is currently on.
+     */
     public void detectExitRequests(int currentFloor) {
         Node current = head;
 
@@ -126,76 +114,28 @@ public class List {
         }
     }
 
-    /*
-     * Prints the queue from head to tail.
-     */
-    public void printForward() {
-        Node current = head;
-        System.out.print("Forward: ");
-        while (current != null) {
-            System.out.print(current.user + " ");
-            current = current.next;
-        }
-        System.out.println();
-    }
+    // Getters and Setters
 
-    /**
-     * Prints the queue from tail to head.
-     */
-    public void printBackward() {
-        Node current = tail;
-        System.out.print("Backward: ");
-        while (current != null) {
-            System.out.print(current.user + " ");
-            current = current.prev;
-        }
-        System.out.println();
-    }
-
-    /**
-     * Gets the current size of the queue.
-     * @return The number of elements in the queue
-     */
     public int getSize() {
         return size;
     }
 
-    /**
-     * Sets the size of the queue (use with caution).
-     * @param size The new size value
-     */
     public void setSize(int size) {
         this.size = size;
     }
 
-    /**
-     * Gets the head node of the queue.
-     * @return The head node
-     */
     public Node getHead() {
         return head;
     }
 
-    /**
-     * Sets the head node of the queue.
-     * @param head The new head node
-     */
     public void setHead(Node head) {
         this.head = head;
     }
 
-    /**
-     * Gets the tail node of the queue.
-     * @return The tail node
-     */
     public Node getTail() {
         return tail;
     }
 
-    /**
-     * Sets the tail node of the queue.
-     * @param tail The new tail node
-     */
     public void setTail(Node tail) {
         this.tail = tail;
     }

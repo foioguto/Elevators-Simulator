@@ -1,8 +1,8 @@
 package run;
 
 import dataStructure.InternalPanel;
-import dataStructure.List;
-import dataStructure.Vector;
+import dataStructure.DoubleLinkedList;
+import dataStructure.Floor;
 
 /**
  * Represents an elevator in a building simulation.
@@ -13,7 +13,7 @@ public class Elevator extends InternalPanel {
     private ElevatorState state;
     private int currentFloor;
     private boolean moving;
-    private List currentUsers = new List();
+    private DoubleLinkedList currentUsers = new DoubleLinkedList();
     private int sleepMode = 0;
     InternalPanel panel = new InternalPanel();
 
@@ -56,7 +56,7 @@ public class Elevator extends InternalPanel {
 
         while (keepGoing && currentFloor < building.getTotalFloors()) {
 
-            Vector floor = building.getFloor(currentFloor);
+            Floor floor = building.getFloor(currentFloor);
 
             boolean wantsToEnter = wantsToEnterHere(floor);
             boolean wantsToExit = panel.wantsToExitHere(currentUsers, currentFloor);
@@ -103,7 +103,7 @@ public class Elevator extends InternalPanel {
 
         while (keepGoing && currentFloor >= 0) {
 
-            Vector floor = building.getFloor(currentFloor);
+            Floor floor = building.getFloor(currentFloor);
 
             boolean wantsToEnter = wantsToEnterHere(floor);
             boolean wantsToExit = panel.wantsToExitHere(currentUsers,currentFloor);
@@ -133,25 +133,34 @@ public class Elevator extends InternalPanel {
         }
     }
 
+
     public boolean checkSleepMode() {
         return sleepMode == 2;
     }
 
+    public void resetSleepMode() {
+        this.sleepMode = 0;
+    }
+
     public void stop() {
         state = ElevatorState.IDLE;
-        System.out.println("Elevador entrou em modo de espera no andar " + currentFloor);
     }
 
     /**
      * Checks if there are users waiting to go up on the specified floor.
-     * @param vector The floor to check for waiting users
+     * @param floor The floor to check for waiting users
      * @return true if at least one user wants to go up, false otherwise
      */
-    public boolean wantsToEnterHere(Vector vector) {
-        for (int i = 0; i < vector.getUsers().length; i++) {
-            User user = vector.getUser(i);
+    public boolean wantsToEnterHere(Floor floor) {
+        for (int i = 0; i < floor.getUsers().length; i++) {
+            User user = floor.getUser(i);
             if (user != null) {
-                return true;
+                if (this.state == ElevatorState.UP && user.isUp()) {
+                    return true;
+                }
+                if (this.state == ElevatorState.DOWN && !user.isUp()) {
+                    return true;
+                }
             }
         }
         return false;
@@ -161,9 +170,9 @@ public class Elevator extends InternalPanel {
      * Handles door operations at the current floor.
      * Manages the opening/closing of doors and passenger flow.
      */
-    public void handleDoorsAtCurrentFloor(Vector vector) {
+    public void handleDoorsAtCurrentFloor(Floor floor) {
         currentUsers.detectExitRequests(this.currentFloor);
-        vector.getEveryoneInside(this.currentUsers);
+        floor.getEveryoneInside(this.currentUsers);
     }
 
     /**
@@ -193,7 +202,7 @@ public class Elevator extends InternalPanel {
     public boolean requestsBelow(Building building) {
         for (int i = 0; i < building.getFloors().length; i++) {
             if (i < currentFloor) {
-                Vector floor = building.getFloor(i);
+                Floor floor = building.getFloor(i);
                 User[] users = floor.getUsers();
 
                 if (users != null) {
@@ -232,7 +241,7 @@ public class Elevator extends InternalPanel {
      * Gets the queue of current passengers in the elevator.
      * @return The Queue object containing current passengers
      */
-    public List getCurrentUsers() {
+    public DoubleLinkedList getCurrentUsers() {
         return currentUsers;
     }
 
@@ -240,7 +249,7 @@ public class Elevator extends InternalPanel {
      * Sets the queue of current passengers in the elevator.
      * @param currentUsers The new Queue of passengers
      */
-    public void setCurrentUsers(List currentUsers) {
+    public void setCurrentUsers(DoubleLinkedList currentUsers) {
         this.currentUsers = currentUsers;
     }
 
