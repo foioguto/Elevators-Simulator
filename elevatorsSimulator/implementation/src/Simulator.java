@@ -4,65 +4,107 @@ import run.Elevator;
 
 import java.util.Random;
 
+/**
+ * Controls the simulation of the elevator system in a building.
+ * Handles random or manual initialization, user generation and elevator cycles.
+ */
 public class Simulator {
-    Floor floors[];
-    Random random = new Random();
-    Building building;
-    Elevator elevator;
+    private Floor[] floors;
+    private final Random random = new Random();
+    private Building building;
+    private Elevator elevator;
 
-    public void startBuildingRandom(){
-        int min = 2;
-        int floorsNumber = 2 + random.nextInt(3);
+    /**
+     * Initializes the building with a random number of floors (between 2 and 4).
+     */
+    public void startBuildingRandom() {
+        int floorsNumber = 2 + random.nextInt(5); // 2 to 4 floors
+        this.building = new Building(floorsNumber);
+        System.out.println("Building: " + floorsNumber);
+    }
+
+    /**
+     * Initializes the building with a specified number of floors.
+     * @param floorsNumber the number of floors to create
+     */
+    public void startBuildingManual(int floorsNumber) {
         this.building = new Building(floorsNumber);
     }
 
-    public void startBuildingManual(int floorsNumber){
-        this.building = new Building(floorsNumber);
-    }
-
-    public void setUsersBuilding(){
-        for(int i=0; i<building.getFloors().length; i++){
-            building.getFloors()[i] = new Floor(i);
-            building.getFloors()[i].setUsers(random.nextInt(4), building.getTotalFloors(), building.getFloors()[i].getFloor());
+    /**
+     * Populates each floor with a random number of users (up to 3).
+     */
+    public void setUsersBuilding() {
+        for (int i = 0; i < building.getFloors().length; i++) {
+            Floor floor = new Floor(i);
+            floor.setUsers(random.nextInt(4), building.getTotalFloors(), i);
+            building.getFloors()[i] = floor;
         }
     }
 
-    public void setElevators(){
-        elevator = new Elevator(8);
+    /**
+     * Initializes the elevator and sets it in the building.
+     */
+    public void setElevators() {
+        this.elevator = new Elevator(8); // max capacity = 8
         building.setElevator(elevator);
     }
 
-    public void startElevator(){
+    /**
+     * Starts the elevator simulation by moving it upward.
+     */
+    public void startElevator() {
         elevator.moveUp(building);
     }
 
+    /**
+     * Adds new random user requests on each floor, without removing existing users.
+     */
     public void generateNewUserRequests() {
         for (int i = 0; i < building.getFloors().length; i++) {
             Floor floor = building.getFloors()[i];
-
-            // Adiciona novos usuários sem apagar os anteriores
-            int newUsers = random.nextInt(3); // até 2 novos usuários
+            int newUsers = random.nextInt(3); // up to 2 new users
             floor.setAdditionalUsers(newUsers, building.getTotalFloors(), i);
         }
     }
 
+    /**
+     * Runs multiple cycles of elevator movement and user generation.
+     * @param times Number of elevator cycles to simulate
+     */
     public void simulateElevatorRuns(int times) {
-        System.out.println("🔁 Iniciando simulação com " + times + " ciclos de elevador...\n");
+        System.out.println("Starting simulation with " + times + " elevator cycles...\n");
 
         for (int i = 1; i <= times; i++) {
-            System.out.println("========== CICLO #" + i + " ==========");
+            System.out.println("CYCLE #" + i);
 
-            // Gera novas solicitações de usuários sem apagar os existentes
             generateNewUserRequests();
 
-            // Elevador começa no andar atual (sem resetar)
             elevator.moveUp(building);
             elevator.resetSleepMode();
 
-            System.out.println("========== FIM DO CICLO #" + i + " ==========\n");
+            System.out.println("END OF CYCLE #" + i + "\n");
         }
 
-        System.out.println("✅ Simulação finalizada.");
+        System.out.println("Simulation completed.");
     }
 
+
+    // Getters and Setters
+
+    public Building getBuilding() {
+        return building;
+    }
+
+    public Elevator getElevator() {
+        return elevator;
+    }
+
+    public Floor[] getFloors() {
+        return floors;
+    }
+
+    public void setFloors(Floor[] floors) {
+        this.floors = floors;
+    }
 }
