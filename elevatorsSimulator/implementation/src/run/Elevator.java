@@ -46,7 +46,7 @@ public class Elevator extends InternalPanel {
      * Updates the current floor and direction state.
      */
     public void moveUp(Building building) {
-        if (checkSleepMode()) {
+        if (checkSleepMode(building)) {
             stop();
             return;
         }
@@ -71,13 +71,11 @@ public class Elevator extends InternalPanel {
                 insideWantsUp = panel.insideWantsToGoUp(currentUsers, currentFloor);
 
                 if (!wantsToEnter && !wantsToExit && !someoneAbove && !insideWantsUp) {
-                    sleepMode++;
                     System.out.println("Current Floor: " + currentFloor + ", Current User: " + currentUsers.getSize() + ", State: " + state);
                     moveDown(building);
                     break;
                 }
             } else if (!someoneAbove && !insideWantsUp) {
-                sleepMode++;
                 moveDown(building);
                 break;
             }
@@ -91,7 +89,7 @@ public class Elevator extends InternalPanel {
      * Updates the current floor and direction state.
      */
     public void moveDown(Building building) {
-        if (checkSleepMode()) {
+        if (checkSleepMode(building)) {
             stop();
             return;
         }
@@ -116,13 +114,11 @@ public class Elevator extends InternalPanel {
                 insideWantsDown = panel.insideWantsToGoDown(currentUsers, currentFloor);
 
                 if (!wantsToEnter && !wantsToExit && !someoneBelow && !insideWantsDown) {
-                    sleepMode++;
                     System.out.println("Current Floor: " + currentFloor + ", Current User: " + currentUsers.getSize() + ", State: " + state);
                     moveUp(building);
                     break;
                 }
             } else if (!someoneBelow && !insideWantsDown) {
-                sleepMode++;
                 moveUp(building);
                 break;
             }
@@ -135,8 +131,8 @@ public class Elevator extends InternalPanel {
      * Checks if the elevator should enter sleep mode.
      * @return true if sleep mode is activated
      */
-    public boolean checkSleepMode() {
-        return sleepMode == 2;
+    public boolean checkSleepMode(Building building) {
+        return !requestsAbove(building) && !requestsBelow(building) && !requestsHere(building) && currentUsers.getSize() == 0;
     }
 
     /**
@@ -177,6 +173,18 @@ public class Elevator extends InternalPanel {
     public void handleDoorsAtCurrentFloor(Floor floor) {
         currentUsers.detectExitRequests(this.currentFloor);
         floor.getEveryoneInside(this.currentUsers);
+    }
+
+    public boolean requestsHere(Building building) {
+        User[] users = building.getFloor(currentFloor).getUsers();
+            if (users != null) {
+                for (User user : users) {
+                    if (user != null) {
+                        return true;
+                    }
+                }
+            }
+        return false;
     }
 
     /**
