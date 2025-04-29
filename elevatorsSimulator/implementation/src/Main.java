@@ -5,6 +5,6 @@ public class Main {
         simulator.startBuildingRandom();
         simulator.setUsersBuilding();
         simulator.setElevators();
-        simulator.simulateElevatorRuns(5);
+        simulator.simulateElevatorRuns(1);
      }
 }
