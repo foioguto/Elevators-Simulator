@@ -22,12 +22,8 @@ public class Building {
         this.floors = new Floor[totalFloors];
     }
 
-    /**
-     * Sets the elevator instance for the building.
-     * @param elevator1 The Elevator object to associate with the building
-     */
-    public void setElevator(Elevator elevator1) {
-        this.elevator = elevator1;
+    public void generateFloors(int totalFloors) {
+
     }
 
     /**
@@ -64,5 +60,8 @@ public class Building {
      */
     public int getTotalFloors() {
         return totalFloors;
+    }
+
+    public void setElevator(Elevator elevator) {
     }
 }

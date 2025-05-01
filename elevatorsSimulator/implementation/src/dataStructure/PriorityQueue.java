@@ -1,5 +1,6 @@
 package dataStructure;
 
+import run.Elevator;
 import run.User;
 
 import java.sql.SQLOutput;
@@ -79,11 +80,10 @@ public class PriorityQueue {
         size--;
     }
 
-    public void moveToElevator() {
+    public void moveToElevator(Elevator currentUsers) {
         User current = head.user;
         remove();
-        DoubleLinkedList temp = new DoubleLinkedList();
-        temp.append(current);
+        currentUsers.append(current);
     }
 
     public void print() {

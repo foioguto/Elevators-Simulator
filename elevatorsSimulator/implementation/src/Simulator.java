@@ -1,6 +1,8 @@
 import dataStructure.Floor;
 import run.Building;
 import run.Elevator;
+import run.User;
+import run.ConnectionDB;
 
 import java.util.Random;
 
@@ -35,18 +37,15 @@ public class Simulator {
      * Populates each floor with a random number of users (up to 3).
      */
     public void setUsersBuilding() {
-        for (int i = 0; i < building.getFloors().length; i++) {
-            Floor floor = new Floor(i);
-            floor.setUsers(random.nextInt(4), building.getTotalFloors(), i);
-            building.getFloors()[i] = floor;
-        }
+        ConnectionDB postgres = new ConnectionDB();
+        postgres.start();
     }
 
     /**
      * Initializes the elevator and sets it in the building.
      */
     public void setElevators() {
-        this.elevator = new Elevator(8); // max capacity = 8
+        this.elevator = new Elevator(8, false); // max capacity = 8
         building.setElevator(elevator);
     }
 
@@ -63,8 +62,8 @@ public class Simulator {
     public void generateNewUserRequests() {
         for (int i = 0; i < building.getFloors().length; i++) {
             Floor floor = building.getFloors()[i];
-            int newUsers = random.nextInt(3); // up to 2 new users
-            floor.setAdditionalUsers(newUsers, building.getTotalFloors(), i);
+            User newUser = new User(0, 1, true);
+            floor.bringElevatorToFloor(newUser);
         }
     }
 

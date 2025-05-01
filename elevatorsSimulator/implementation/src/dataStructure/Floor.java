@@ -1,5 +1,6 @@
 package dataStructure;
 
+import run.Elevator;
 import run.User;
 
 import java.util.Random;
@@ -54,7 +55,7 @@ public class Floor {
     /**
      * Adds elevator users with this floor destination.
      */
-    public void setAdditionalUsers(User element) {
+    public void bringElevatorToFloor(User element) {
         //if there is no space remaining, it will create a new vector with +2 space
         if (getSize() == users.length - 1) {
             User[] greaterUsers = new User[users.length + 1];
@@ -74,16 +75,16 @@ public class Floor {
      * Moves all users from this floor into the elevator (linked list).
      * After being moved, each user slot is set to null.
      *
-     * @param doubleLinkedList The elevator's internal user list
+     * @param currentUsers The elevator's internal user list
      */
-    public void getEveryoneInside(DoubleLinkedList doubleLinkedList) {
+    public void goToElevator(Elevator currentUsers) {
         if (users == null || users.length == 0) {
             return;
         }
 
         for (int i = 0; i < users.length; i++) {
             if (users[i] != null) {
-                doubleLinkedList.append(users[i]);
+                currentUsers.append(users[i]);
                 users[i] = null;
             }
         }

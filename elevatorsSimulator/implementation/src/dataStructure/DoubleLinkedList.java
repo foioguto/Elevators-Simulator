@@ -108,7 +108,7 @@ public class DoubleLinkedList {
                 }
 
                 Floor actualFloor = new Floor(currentFloor);
-                actualFloor.setAdditionalUsers(current.user);
+                actualFloor.bringElevatorToFloor(current.user);
 
                 size--;
             }

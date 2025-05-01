@@ -8,14 +8,14 @@ import dataStructure.Floor;
  * Represents an elevator in a building simulation.
  * Manages elevator movement, user entry/exit, and direction requests.
  */
-public class Elevator extends InternalPanel {
+public class Elevator extends DoubleLinkedList {
     private final int maxCapacity;
     private ElevatorState state;
     private int currentFloor;
     private int sleepMode = 0;
-    private DoubleLinkedList currentUsers = new DoubleLinkedList();
-    private InternalPanel panel = new InternalPanel();
-
+    private DoubleLinkedList currentUsers;
+    private InternalPanel panel;
+    private boolean priority; // the elevator is for priority queue or not
     /**
      * Constants for the elevator.
      */
@@ -35,10 +35,13 @@ public class Elevator extends InternalPanel {
         }
     }
 
-    public Elevator(int maxCapacity) {
+    public Elevator(int maxCapacity, boolean priority) {
         this.currentFloor = 0;
         this.state = ElevatorState.IDLE;
         this.maxCapacity = maxCapacity;
+        this.priority = priority;
+        this.currentUsers = new DoubleLinkedList();
+        this.panel = new InternalPanel();
     }
 
     /**
@@ -172,7 +175,7 @@ public class Elevator extends InternalPanel {
      */
     public void handleDoorsAtCurrentFloor(Floor floor) {
         currentUsers.detectExitRequests(this.currentFloor);
-        floor.getEveryoneInside(this.currentUsers);
+        floor.goToElevator((Elevator) this.currentUsers);
     }
 
     public boolean requestsHere(Building building) {
@@ -251,4 +254,8 @@ public class Elevator extends InternalPanel {
     public int getMaxCapacity() {
         return maxCapacity;
     }
+
+    public boolean isPriority() {return priority;}
+
+    public void setPriority(boolean priority) {this.priority = priority;}
 }
