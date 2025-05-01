@@ -11,7 +11,7 @@ import java.util.Random;
 public class Floor {
     private int floor;
     private User[] users;
-    private Random rand;
+    private int size;
 
     /**
      * Constructs a new Floor object with the specified floor number.
@@ -19,17 +19,12 @@ public class Floor {
      */
     public Floor(int floor) {
         this.floor = floor;
-        this.rand = new Random(); // Initialize Random here for consistent usage
-        this.users = new User[0]; // Initialize empty array to prevent NPE
+        this.users = new User[1]; // Initialize  array with 1 element to prevent NPE
+        this.size = 0;
     }
 
     /**
-     * Generates random users waiting on this floor.
-     * Each user is created with random destination and direction.
-     *
-     * @param usersQuantity The number of users to generate
      * @param totalFloors The total number of floors in the building (for destination bounds)
-     * @param actualFloor The floor where these users are generated
      * @throws IllegalArgumentException if usersQuantity is negative or totalFloors < 2
      */
     public void setUsers(int usersQuantity, int totalFloors, int actualFloor) {
@@ -57,25 +52,22 @@ public class Floor {
     }
 
     /**
-     * Adds additional users to empty spots in the current users array.
-     *
-     * @param quantity Number of users to add
-     * @param totalFloors Total number of floors in the building
-     * @param currentFloor The current floor of this object
+     * Adds elevator users with this floor destination.
      */
-    public void setAdditionalUsers(int quantity, int totalFloors, int currentFloor) {
-        for (int i = 0; i < users.length && quantity > 0; i++) {
-            if (users[i] == null) {
-                int destination;
-                do {
-                    destination = rand.nextInt(totalFloors);
-                } while (destination == currentFloor);
+    public void setAdditionalUsers(User element, int currentFloor) {
+        //if there is no space remaining, it will create a new vector with +2 space
+        if (getSize() == users.length - 1) {
+            User[] greaterUsers = new User[users.length + 1];
 
-                boolean direction = destination > currentFloor;
-                users[i] = new User(currentFloor, destination, direction);
-                quantity--;
+            for (int i = 0; i < getSize(); i++) {
+                greaterUsers[i] = users[i];
             }
+
+            users = greaterUsers;
+
         }
+        users[size] = element;
+        size++;
     }
 
     /**
@@ -146,5 +138,9 @@ public class Floor {
      */
     public void setFloor(int floor) {
         this.floor = floor;
+    }
+
+    public int getSize() {
+        return size;
     }
 }
