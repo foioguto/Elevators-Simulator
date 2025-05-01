@@ -107,6 +107,9 @@ public class DoubleLinkedList {
                     tail = current.prev;
                 }
 
+                Floor actualFloor = new Floor(currentFloor);
+                actualFloor.setAdditionalUsers(current.user);
+
                 size--;
             }
 

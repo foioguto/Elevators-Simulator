@@ -54,7 +54,7 @@ public class Floor {
     /**
      * Adds elevator users with this floor destination.
      */
-    public void setAdditionalUsers(User element, int currentFloor) {
+    public void setAdditionalUsers(User element) {
         //if there is no space remaining, it will create a new vector with +2 space
         if (getSize() == users.length - 1) {
             User[] greaterUsers = new User[users.length + 1];
@@ -66,7 +66,7 @@ public class Floor {
             users = greaterUsers;
 
         }
-        users[size] = element;
+        users[size] = element; // add in the last position
         size++;
     }
 
