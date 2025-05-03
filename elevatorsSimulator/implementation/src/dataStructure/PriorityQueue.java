@@ -3,11 +3,9 @@ package dataStructure;
 import run.Elevator;
 import run.User;
 
-import java.sql.SQLOutput;
-
 public class PriorityQueue {
 
-    class Node {
+    static class Node {
         Node next;
         Node prev;
         User user;
@@ -80,10 +78,10 @@ public class PriorityQueue {
         size--;
     }
 
-    public void moveToElevator(Elevator currentUsers) {
+    public User moveToElevator(Elevator currentUsers) {
         User current = head.user;
         remove();
-        currentUsers.append(current);
+        return current;
     }
 
     public void print() {

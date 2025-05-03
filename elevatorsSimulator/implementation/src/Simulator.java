@@ -39,6 +39,8 @@ public class Simulator {
     public void setUsersBuilding() {
         ConnectionDB postgres = new ConnectionDB();
         postgres.start();
+        Floor f1 = new Floor(1);
+        f1.setUsers(3, 5, 1);
     }
 
     /**
@@ -53,7 +55,7 @@ public class Simulator {
      * Starts the elevator simulation by moving it upward.
      */
     public void startElevator() {
-        elevator.moveUp(building);
+        elevator.move(building);
     }
 
     /**
@@ -79,8 +81,7 @@ public class Simulator {
 
             generateNewUserRequests();
 
-            elevator.moveUp(building);
-            elevator.resetSleepMode();
+            elevator.move(building);
 
             System.out.println("END OF CYCLE #" + i + "\n");
         }
@@ -100,7 +101,7 @@ public class Simulator {
     }
 
     public Floor[] getFloors() {
-        return floors;
+        return this.floors;
     }
 
     public void setFloors(Floor[] floors) {

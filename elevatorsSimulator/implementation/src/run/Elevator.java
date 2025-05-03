@@ -1,24 +1,22 @@
 package run;
 
 import dataStructure.InternalPanel;
-import dataStructure.DoubleLinkedList;
 import dataStructure.Floor;
+import dataStructure.UserQueue;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an elevator in a building simulation.
  * Manages elevator movement, user entry/exit, and direction requests.
  */
-public class Elevator extends DoubleLinkedList {
+public class Elevator extends  UserQueue{
     private final int maxCapacity;
+    private final InternalPanel panel;
     private ElevatorState state;
+    private UserQueue currentUsers;
     private int currentFloor;
-    private int sleepMode = 0;
-    private DoubleLinkedList currentUsers;
-    private InternalPanel panel;
-    private boolean priority; // the elevator is for priority queue or not
-    /**
-     * Constants for the elevator.
-     */
+    private boolean priority;
+
     public enum ElevatorState {
         IDLE(0),
         UP(1),
@@ -40,190 +38,93 @@ public class Elevator extends DoubleLinkedList {
         this.state = ElevatorState.IDLE;
         this.maxCapacity = maxCapacity;
         this.priority = priority;
-        this.currentUsers = new DoubleLinkedList();
+        this.currentUsers = new UserQueue();
         this.panel = new InternalPanel();
     }
 
-    /**
-     * Moves the elevator up one floor.
-     * Updates the current floor and direction state.
-     */
-    public void moveUp(Building building) {
-        if (checkSleepMode(building)) {
-            stop();
-            return;
-        }
+    public void move(Building building) {
 
-        while (currentFloor < building.getTotalFloors()) {
-            state = ElevatorState.UP;
+        int direction = (state == ElevatorState.IDLE) ? ElevatorState.UP.getDirectionCode() : state.getDirectionCode();
+        state = (direction > 0) ? ElevatorState.UP : ElevatorState.DOWN;
+
+        while (currentFloor >= 0 && currentFloor < building.getTotalFloors()) {
             Floor floor = building.getFloor(currentFloor);
-            System.out.println("Current Floor: " + currentFloor + ", Current User: " + currentUsers.getSize() + ", State: " + state);
+            System.out.printf("Current Floor: %d, Users: %d, State: %s%n", currentFloor, currentUsers.getSize(), state);
 
             boolean wantsToEnter = wantsToEnterHere(floor);
             boolean wantsToExit = panel.wantsToExitHere(currentUsers, currentFloor);
-            boolean someoneAbove = requestsAbove(building);
-            boolean insideWantsUp = panel.insideWantsToGoUp(currentUsers, currentFloor);
 
             if (wantsToEnter || wantsToExit) {
-                state = ElevatorState.IDLE;
-                handleDoorsAtCurrentFloor(floor);
-
-                wantsToEnter = wantsToEnterHere(floor);
-                wantsToExit = panel.wantsToExitHere(currentUsers, currentFloor);
-                someoneAbove = requestsAbove(building);
-                insideWantsUp = panel.insideWantsToGoUp(currentUsers, currentFloor);
-
-                if (!wantsToEnter && !wantsToExit && !someoneAbove && !insideWantsUp) {
-                    System.out.println("Current Floor: " + currentFloor + ", Current User: " + currentUsers.getSize() + ", State: " + state);
-                    moveDown(building);
-                    break;
-                }
-            } else if (!someoneAbove && !insideWantsUp) {
-                moveDown(building);
-                break;
+                handleDoorsAtCurrentFloor(currentUsers, floor);
             }
 
-            currentFloor++;
-        }
-    }
+            boolean hasFurtherRequests = (direction > 0)
+                    ? requestsAbove(building) || panel.insideWantsToGoUp(currentUsers, currentFloor)
+                    : requestsBelow(building) || panel.insideWantsToGoDown(currentUsers, currentFloor);
 
-    /**
-     * Moves the elevator down one floor.
-     * Updates the current floor and direction state.
-     */
-    public void moveDown(Building building) {
-        if (checkSleepMode(building)) {
-            stop();
-            return;
-        }
-
-        while (currentFloor >= 0) {
-            state = ElevatorState.DOWN;
-            Floor floor = building.getFloor(currentFloor);
-            System.out.println("Current Floor: " + currentFloor + ", Current User: " + currentUsers.getSize() + ", State: " + state);
-
-            boolean wantsToEnter = wantsToEnterHere(floor);
-            boolean wantsToExit = panel.wantsToExitHere(currentUsers, currentFloor);
-            boolean someoneBelow = requestsBelow(building);
-            boolean insideWantsDown = panel.insideWantsToGoDown(currentUsers, currentFloor);
-
-            if (wantsToEnter || wantsToExit) {
-                handleDoorsAtCurrentFloor(floor);
-                state = ElevatorState.IDLE;
-
-                wantsToEnter = wantsToEnterHere(floor);
-                wantsToExit = panel.wantsToExitHere(currentUsers, currentFloor);
-                someoneBelow = requestsBelow(building);
-                insideWantsDown = panel.insideWantsToGoDown(currentUsers, currentFloor);
-
-                if (!wantsToEnter && !wantsToExit && !someoneBelow && !insideWantsDown) {
-                    System.out.println("Current Floor: " + currentFloor + ", Current User: " + currentUsers.getSize() + ", State: " + state);
-                    moveUp(building);
-                    break;
-                }
-            } else if (!someoneBelow && !insideWantsDown) {
-                moveUp(building);
-                break;
+            if (!hasFurtherRequests) {
+                direction = -direction;
+                state = (direction > 0) ? ElevatorState.UP : ElevatorState.DOWN;
             }
 
-            currentFloor--;
+            currentFloor += direction;
         }
+
+        stop();
     }
 
-    /**
-     * Checks if the elevator should enter sleep mode.
-     * @return true if sleep mode is activated
-     */
-    public boolean checkSleepMode(Building building) {
-        return !requestsAbove(building) && !requestsBelow(building) && !requestsHere(building) && currentUsers.getSize() == 0;
-    }
-
-    /**
-     * Resets the elevator's sleep mode counter.
-     */
-    public void resetSleepMode() {
-        this.sleepMode = 0;
-    }
-
-    /**
-     * Stops the elevator and sets it to IDLE.
-     */
     public void stop() {
         state = ElevatorState.IDLE;
     }
 
-    /**
-     * Checks if there are users waiting to go in the elevator's current direction.
-     */
-    public boolean wantsToEnterHere(Floor floor) {
-        for (int i = 0; i < floor.getUsers().length; i++) {
-            User user = floor.getUser(i);
+    public boolean wantsToEnterHere(@NotNull Floor floor) {
+        for (User user : floor.getUsers()) {
             if (user != null) {
-                if (this.state == ElevatorState.UP && user.isUp()) {
-                    return true;
-                }
-                if (this.state == ElevatorState.DOWN && !user.isUp()) {
-                    return true;
-                }
+                if (state == ElevatorState.UP && user.isUp()) return true;
+                if (state == ElevatorState.DOWN && !user.isUp()) return true;
             }
         }
         return false;
     }
 
-    /**
-     * Handles door operations at the current floor.
-     */
-    public void handleDoorsAtCurrentFloor(Floor floor) {
-        currentUsers.detectExitRequests(this.currentFloor);
-        floor.goToElevator((Elevator) this.currentUsers);
+    public void handleDoorsAtCurrentFloor(@NotNull UserQueue currentUsers, Floor floor) {
+        panel.detectExitRequests(currentUsers, this.currentFloor);
+        floor.goToElevator(this);
     }
 
-    public boolean requestsHere(Building building) {
-        User[] users = building.getFloor(currentFloor).getUsers();
-            if (users != null) {
-                for (User user : users) {
-                    if (user != null) {
-                        return true;
-                    }
-                }
+    public boolean requestsHere(@NotNull Building building) {
+        UserQueue users = building.getFloor(currentFloor).getUsers();
+        if (users != null) {
+            for (User user : users) {
+                if (user != null) return true;
             }
+        }
         return false;
     }
 
-    /**
-     * Checks for any user requests above the current floor.
-     */
-    public boolean requestsAbove(Building building) {
+    public boolean requestsAbove(@NotNull Building building) {
         for (int i = currentFloor + 1; i < building.getFloors().length; i++) {
-            User[] users = building.getFloor(i).getUsers();
+            UserQueue users = building.getFloor(i).getUsers();
             if (users != null) {
                 for (User user : users) {
-                    if (user != null) {
-                        return true;
-                    }
+                    if (user != null) return true;
                 }
             }
         }
         return false;
     }
 
-    /**
-     * Checks for any user requests below the current floor.
-     */
     public boolean requestsBelow(Building building) {
         for (int i = 0; i < currentFloor; i++) {
-            User[] users = building.getFloor(i).getUsers();
+            UserQueue users = building.getFloor(i).getUsers();
             if (users != null) {
                 for (User user : users) {
-                    if (user != null && !user.isUp()) {
-                        return true;
-                    }
+                    if (user != null && !user.isUp()) return true;
                 }
             }
         }
         return false;
     }
-
 
     // Getters and Setters
 
@@ -235,11 +136,11 @@ public class Elevator extends DoubleLinkedList {
         this.currentFloor = currentFloor;
     }
 
-    public DoubleLinkedList getCurrentUsers() {
+    public UserQueue getCurrentUsers() {
         return currentUsers;
     }
 
-    public void setCurrentUsers(DoubleLinkedList currentUsers) {
+    public void setCurrentUsers(UserQueue currentUsers) {
         this.currentUsers = currentUsers;
     }
 
@@ -255,7 +156,11 @@ public class Elevator extends DoubleLinkedList {
         return maxCapacity;
     }
 
-    public boolean isPriority() {return priority;}
+    public boolean isPriority() {
+        return priority;
+    }
 
-    public void setPriority(boolean priority) {this.priority = priority;}
+    public void setPriority(boolean priority) {
+        this.priority = priority;
+    }
 }

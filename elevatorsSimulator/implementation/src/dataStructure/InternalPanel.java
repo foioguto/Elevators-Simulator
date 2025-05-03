@@ -17,8 +17,8 @@ public class InternalPanel {
      * @param actualFloor The current floor of the elevator.
      * @return true if at least one user wants to exit here.
      */
-    public boolean wantsToExitHere(DoubleLinkedList currentUsers, int actualFloor) {
-        DoubleLinkedList.Node current = currentUsers.getHead();
+    public boolean wantsToExitHere(UserQueue currentUsers, int actualFloor) {
+        UserQueue.UserNode current = currentUsers.getHead();
 
         while (current != null) {
             if (current.user.getNextFloor() == actualFloor) {
@@ -37,8 +37,8 @@ public class InternalPanel {
      * @param currentFloor The current floor of the elevator.
      * @return true if at least one user wants to go up.
      */
-    public boolean insideWantsToGoUp(DoubleLinkedList currentUsers, int currentFloor) {
-        DoubleLinkedList.Node current = currentUsers.getHead();
+    public boolean insideWantsToGoUp(UserQueue currentUsers, int currentFloor) {
+        UserQueue.UserNode current = currentUsers.getHead();
 
         while (current != null) {
             if (current.user.getNextFloor() > currentFloor) {
@@ -57,8 +57,8 @@ public class InternalPanel {
      * @param currentFloor The current floor of the elevator.
      * @return true if at least one user wants to go down.
      */
-    public boolean insideWantsToGoDown(DoubleLinkedList currentUsers, int currentFloor) {
-        DoubleLinkedList.Node current = currentUsers.getHead();
+    public boolean insideWantsToGoDown(UserQueue currentUsers, int currentFloor) {
+        UserQueue.UserNode current = currentUsers.getHead();
 
         while (current != null) {
             if (current.user.getNextFloor() < currentFloor) {
@@ -68,5 +68,36 @@ public class InternalPanel {
         }
 
         return false;
+    }
+
+    /**
+     * Removes users who requested to exit at the current floor.
+     *
+     * @param currentUsers List of users currently in the elevator.
+     * @param currentFloor The current floor of the elevator.
+     */
+    public void detectExitRequests(UserQueue currentUsers, int currentFloor) {
+        UserQueue.UserNode current = currentUsers.getHead();
+        UserQueue.UserNode prev = null;
+
+        while (current != null) {
+            if (current.user.getNextFloor() == currentFloor) {
+                if (prev == null) {
+                    currentUsers.setHead(current.next);
+                } else {
+                    prev.next = current.next;
+                }
+
+                if (current == currentUsers.getTail()) {
+                    currentUsers.setTail(prev);
+                }
+
+                currentUsers.decrementSize();
+                current = (prev == null) ? currentUsers.getHead() : prev.next;
+            } else {
+                prev = current;
+                current = current.next;
+            }
+        }
     }
 }
