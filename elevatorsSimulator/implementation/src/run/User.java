@@ -5,6 +5,8 @@ package run;
 
 
 public class User {
+    private int id;
+    private String name;
     private int currentFloor;
     private int nextFloor;
     private boolean up;
@@ -15,7 +17,9 @@ public class User {
      * @param nextFloor The floor where the user wants to go
      * @param up true if the user wants to go up, false if going down
      */
-    public User(int currentFloor, int nextFloor, boolean up) {
+    public User(int id, String name, int currentFloor, int nextFloor, boolean up) {
+        this.id = id;
+        this.name = name;
         this.currentFloor = currentFloor;
         this.nextFloor = nextFloor;
         this.up = up;
@@ -67,5 +71,21 @@ public class User {
      */
     public void setUp(boolean up) {
         this.up = up;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

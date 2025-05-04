@@ -2,7 +2,7 @@ import dataStructure.Floor;
 import run.Building;
 import run.Elevator;
 import run.User;
-import run.ConnectionDB;
+import dataBank.ConnectionDB;
 
 import java.util.Random;
 
@@ -11,7 +11,6 @@ import java.util.Random;
  * Handles random or manual initialization, user generation and elevator cycles.
  */
 public class Simulator {
-    private Floor[] floors;
     private final Random random = new Random();
     private Building building;
     private Elevator elevator;
@@ -20,7 +19,7 @@ public class Simulator {
      * Initializes the building with a random number of floors (between 2 and 4).
      */
     public void startBuildingRandom() {
-        int floorsNumber = 2 + random.nextInt(5); // 2 to 4 floors
+        int floorsNumber = 5 + random.nextInt(5); // 2 to 4 floors
         this.building = new Building(floorsNumber);
         System.out.println("Building: " + floorsNumber);
     }
@@ -46,8 +45,8 @@ public class Simulator {
     /**
      * Initializes the elevator and sets it in the building.
      */
-    public void setElevators() {
-        this.elevator = new Elevator(8, false); // max capacity = 8
+    public void setElevators(int maxCapacity, boolean priority) {
+        this.elevator = new Elevator(maxCapacity, priority); // max capacity = 8
         building.setElevator(elevator);
     }
 
@@ -81,7 +80,7 @@ public class Simulator {
 
             generateNewUserRequests();
 
-            elevator.move(building);
+            startElevator();
 
             System.out.println("END OF CYCLE #" + i + "\n");
         }
@@ -89,22 +88,4 @@ public class Simulator {
         System.out.println("Simulation completed.");
     }
 
-
-    // Getters and Setters
-
-    public Building getBuilding() {
-        return building;
-    }
-
-    public Elevator getElevator() {
-        return elevator;
-    }
-
-    public Floor[] getFloors() {
-        return this.floors;
-    }
-
-    public void setFloors(Floor[] floors) {
-        this.floors = floors;
-    }
 }

@@ -4,7 +4,7 @@ public class Main {
 
         simulator.startBuildingManual(6);
         simulator.setUsersBuilding();
-        simulator.setElevators();
+        simulator.setElevators(8, false);
         simulator.simulateElevatorRuns(1);
      }
 }

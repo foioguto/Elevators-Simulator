@@ -44,8 +44,8 @@ public class Elevator extends  UserQueue{
 
     public void move(Building building) {
 
-        int direction = (state == ElevatorState.IDLE) ? ElevatorState.UP.getDirectionCode() : state.getDirectionCode();
-        state = (direction > 0) ? ElevatorState.UP : ElevatorState.DOWN;
+        int directionCode = (state == ElevatorState.IDLE) ? ElevatorState.UP.getDirectionCode() : state.getDirectionCode();
+        state = (directionCode > 0) ? ElevatorState.UP : ElevatorState.DOWN;
 
         while (currentFloor >= 0 && currentFloor < building.getTotalFloors()) {
             Floor floor = building.getFloor(currentFloor);
@@ -53,24 +53,31 @@ public class Elevator extends  UserQueue{
 
             boolean wantsToEnter = wantsToEnterHere(floor);
             boolean wantsToExit = panel.wantsToExitHere(currentUsers, currentFloor);
+            boolean hasFurtherRequests;
 
             if (wantsToEnter || wantsToExit) {
                 handleDoorsAtCurrentFloor(currentUsers, floor);
             }
 
-            boolean hasFurtherRequests = (direction > 0)
-                    ? requestsAbove(building) || panel.insideWantsToGoUp(currentUsers, currentFloor)
-                    : requestsBelow(building) || panel.insideWantsToGoDown(currentUsers, currentFloor);
-
-            if (!hasFurtherRequests) {
-                direction = -direction;
-                state = (direction > 0) ? ElevatorState.UP : ElevatorState.DOWN;
+            if (directionCode > 0) {
+                hasFurtherRequests = requestsAbove(building) || panel.insideWantsToGoUp(currentUsers, currentFloor);
+            }
+            else if (directionCode < 0) {
+                hasFurtherRequests = requestsBelow(building) || panel.insideWantsToGoDown(currentUsers, currentFloor);
+            }
+            else {
+                hasFurtherRequests = false;
+                stop();
             }
 
-            currentFloor += direction;
-        }
+            if (!hasFurtherRequests) {
+                directionCode = -directionCode;
+                state = (directionCode > 0) ? ElevatorState.UP : ElevatorState.DOWN;
+                break;
+            }
 
-        stop();
+            currentFloor += directionCode;
+        }
     }
 
     public void stop() {
@@ -78,7 +85,7 @@ public class Elevator extends  UserQueue{
     }
 
     public boolean wantsToEnterHere(@NotNull Floor floor) {
-        for (User user : floor.getUsers()) {
+        for (User user : floor.getUsers()) { // a way to solve problem to compare int with User;
             if (user != null) {
                 if (state == ElevatorState.UP && user.isUp()) return true;
                 if (state == ElevatorState.DOWN && !user.isUp()) return true;
