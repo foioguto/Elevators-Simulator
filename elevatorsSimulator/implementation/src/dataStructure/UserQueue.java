@@ -1,6 +1,5 @@
 package dataStructure;
 
-import org.jetbrains.annotations.NotNull;
 import run.User;
 
 import java.util.Iterator;
@@ -111,7 +110,7 @@ public class UserQueue implements Iterable<User> {
     }
 
     @Override
-    public @NotNull Iterator<User> iterator() {
+    public Iterator<User> iterator() {
         return new Iterator<User>() {
             private UserNode current = head;
 

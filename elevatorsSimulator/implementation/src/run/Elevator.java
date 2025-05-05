@@ -3,7 +3,6 @@ package run;
 import dataStructure.InternalPanel;
 import dataStructure.Floor;
 import dataStructure.UserQueue;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an elevator in a building simulation.
@@ -84,7 +83,7 @@ public class Elevator extends  UserQueue{
         state = ElevatorState.IDLE;
     }
 
-    public boolean wantsToEnterHere(@NotNull Floor floor) {
+    public boolean wantsToEnterHere(Floor floor) {
         for (User user : floor.getUsers()) { // a way to solve problem to compare int with User;
             if (user != null) {
                 if (state == ElevatorState.UP && user.isUp()) return true;
@@ -94,12 +93,12 @@ public class Elevator extends  UserQueue{
         return false;
     }
 
-    public void handleDoorsAtCurrentFloor(@NotNull UserQueue currentUsers, Floor floor) {
+    public void handleDoorsAtCurrentFloor(UserQueue currentUsers, Floor floor) {
         panel.detectExitRequests(currentUsers, this.currentFloor);
         floor.goToElevator(this);
     }
 
-    public boolean requestsHere(@NotNull Building building) {
+    public boolean requestsHere(Building building) {
         UserQueue users = building.getFloor(currentFloor).getUsers();
         if (users != null) {
             for (User user : users) {
@@ -109,7 +108,7 @@ public class Elevator extends  UserQueue{
         return false;
     }
 
-    public boolean requestsAbove(@NotNull Building building) {
+    public boolean requestsAbove(Building building) {
         for (int i = currentFloor + 1; i < building.getFloors().length; i++) {
             UserQueue users = building.getFloor(i).getUsers();
             if (users != null) {

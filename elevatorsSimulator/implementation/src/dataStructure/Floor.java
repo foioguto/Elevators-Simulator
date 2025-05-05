@@ -22,7 +22,7 @@ public class Floor {
             } while (destination == actualFloor);
 
             boolean up = destination > actualFloor;
-            users.append(new User(actualFloor, destination, up));
+            users.append(new User(1234, "João", actualFloor, destination, true, false));
         }
     }
 
