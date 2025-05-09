@@ -1,8 +1,0 @@
-<dependencies>
-    <!-- Driver JDBC for PostgresSQL -->
-    <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.7.2</version>
-    </dependency>
-</dependencies>

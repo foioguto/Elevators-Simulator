@@ -36,10 +36,9 @@ public class Simulator {
      * Populates each floor with a random number of users (up to 3).
      */
     public void setUsersBuilding() {
-//        ConnectionDB postgres = new ConnectionDB();
-//        postgres.start();
-        Floor f1 = new Floor(1);
-        f1.setUsers(3, 5, 1);
+        for (int i = 0; i <= building.getTotalFloors(); i++) {
+            building.getFloor(i).setUsers(building.getTotalFloors(), i);
+        }
     }
 
     /**
@@ -63,7 +62,7 @@ public class Simulator {
     public void generateNewUserRequests() {
         for (int i = 0; i < building.getFloors().length; i++) {
             Floor floor = building.getFloors()[i];
-            User newUser = new User(0, "João", 0, 3, true, false);
+            User newUser = new User( 0, 3, true, false);
             floor.bringElevatorToFloor(newUser);
         }
     }

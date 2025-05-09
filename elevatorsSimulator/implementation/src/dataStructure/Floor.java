@@ -13,16 +13,16 @@ public class Floor {
         this.users = new UserQueue();
     }
 
-    public void setUsers(int quantity, int totalFloors, int actualFloor) {
+    public void setUsers(int totalFloors, int actualFloor) {
         Random rand = new Random();
-        for (int i = 0; i < quantity; i++) {
+        for (int i = 0; i < rand.nextInt(); i++) {
             int destination;
             do {
                 destination = rand.nextInt(totalFloors);
             } while (destination == actualFloor);
 
             boolean up = destination > actualFloor;
-            users.append(new User(1234, "João", actualFloor, destination, true, false));
+            users.append(new User(actualFloor, destination, up, false));
         }
     }
 
