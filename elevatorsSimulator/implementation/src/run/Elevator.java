@@ -4,11 +4,7 @@ import dataStructure.InternalPanel;
 import dataStructure.Floor;
 import dataStructure.UserQueue;
 
-/**
- * Represents an elevator in a building simulation.
- * Manages elevator movement, user entry/exit, and direction requests.
- */
-public class Elevator extends  UserQueue{
+public class Elevator {
     private final int maxCapacity;
     private final InternalPanel panel;
     private ElevatorState state;
@@ -42,52 +38,111 @@ public class Elevator extends  UserQueue{
     }
 
     public void move(Building building) {
+        long startTime = System.nanoTime();
 
         int directionCode = (state == ElevatorState.IDLE) ? ElevatorState.UP.getDirectionCode() : state.getDirectionCode();
         state = (directionCode > 0) ? ElevatorState.UP : ElevatorState.DOWN;
 
-        while (currentFloor >= 0 && currentFloor < building.getTotalFloors()) {
-            Floor floor = building.getFloor(currentFloor);
-            System.out.printf("Current Floor: %d, Users: %d, State: %s%n", currentFloor, currentUsers.getSize(), state);
+        while (isWithinBounds(building)) {
+            logElevatorStatus("Before");
 
-            boolean wantsToEnter = wantsToEnterHere(floor);
+            Floor floor = building.getFloor(currentFloor);
+            boolean wantsToEnter = wantsToEnterHere(floor, building);
             boolean wantsToExit = panel.wantsToExitHere(currentUsers, currentFloor);
-            boolean hasFurtherRequests;
 
             if (wantsToEnter || wantsToExit) {
+                simulateDoorOperation();
                 handleDoorsAtCurrentFloor(currentUsers, floor);
+                simulatePassengerExchange();
+                simulateDoorOperation();
             }
 
-            if (directionCode > 0) {
-                hasFurtherRequests = requestsAbove(building) || panel.insideWantsToGoUp(currentUsers, currentFloor);
-            }
-            else if (directionCode < 0) {
-                hasFurtherRequests = requestsBelow(building) || panel.insideWantsToGoDown(currentUsers, currentFloor);
-            }
-            else {
-                hasFurtherRequests = false;
-                stop();
+            logElevatorStatus("After");
+
+            if (!hasRequestsInCurrentDirection(building, directionCode)) {
+                if (hasRequestsInOppositeDirection(building, directionCode)) {
+                    directionCode = -directionCode;
+                    state = (directionCode > 0) ? ElevatorState.UP : ElevatorState.DOWN;
+                    continue;
+                } else {
+                    stopElevator();
+                    break;
+                }
             }
 
-            if (!hasFurtherRequests) {
-                directionCode = -directionCode;
-                state = (directionCode > 0) ? ElevatorState.UP : ElevatorState.DOWN;
-                break;
-            }
-
+            simulateTravelBetweenFloors();
             currentFloor += directionCode;
         }
+
+        long endTime = System.nanoTime();
+        double durationInSeconds = (endTime - startTime) / 1_000_000_000.0;
+        System.out.printf("\n=== Total Travel Time: %.3f seconds ===%n", durationInSeconds);
+    }
+
+    private boolean isWithinBounds(Building building) {
+        return currentFloor >= 0 && currentFloor < building.getTotalFloors();
+    }
+
+    private void logElevatorStatus(String phase) {
+        if (phase.equals("Before")) {
+            System.out.println("\n================== Elevator Status ==================");
+        }
+
+        System.out.printf("%s | Floor: %d | Passengers: %d | State: %s%n",
+                phase, currentFloor, currentUsers.getSize(), state);
+
+        System.out.print("Passenger destinations: ");
+        for (User user : currentUsers) {
+            System.out.print(user.getNextFloor() + " ");
+        }
+        System.out.println();
+
+        if (phase.equals("After")) {
+            System.out.println("=====================================================");
+        }
+    }
+
+    private boolean hasRequestsInCurrentDirection(Building building, int directionCode) {
+        return (directionCode > 0 && (requestsAbove(building) || panel.insideWantsToGoUp(currentUsers, currentFloor))) ||
+                (directionCode < 0 && (requestsBelow(building) || panel.insideWantsToGoDown(currentUsers, currentFloor)));
+    }
+
+    private boolean hasRequestsInOppositeDirection(Building building, int directionCode) {
+        return (directionCode > 0 && (requestsBelow(building) || panel.insideWantsToGoDown(currentUsers, currentFloor))) ||
+                (directionCode < 0 && (requestsAbove(building) || panel.insideWantsToGoUp(currentUsers, currentFloor)));
+    }
+
+    private void stopElevator() {
+        state = ElevatorState.IDLE;
+        stop();
     }
 
     public void stop() {
         state = ElevatorState.IDLE;
     }
 
-    public boolean wantsToEnterHere(Floor floor) {
-        for (User user : floor.getUsers()) { // a way to solve problem to compare int with User;
+    public boolean wantsToEnterHere(Floor floor, Building building) {
+        for (User user : floor.getUsers()) {
             if (user != null) {
-                if (state == ElevatorState.UP && user.isUp()) return true;
-                if (state == ElevatorState.DOWN && !user.isUp()) return true;
+                if (state == ElevatorState.IDLE) {
+                    return true;
+                }
+
+                if (state == ElevatorState.UP && user.isUp()) {
+                    return true;
+                }
+
+                if (state == ElevatorState.DOWN && !user.isUp()) {
+                    return true;
+                }
+
+                if (currentFloor == building.getTotalFloors() - 1 && !user.isUp()) {
+                    return true;
+                }
+
+                if (currentFloor == 0 && user.isUp()) {
+                    return true;
+                }
             }
         }
         return false;
@@ -96,16 +151,6 @@ public class Elevator extends  UserQueue{
     public void handleDoorsAtCurrentFloor(UserQueue currentUsers, Floor floor) {
         panel.detectExitRequests(currentUsers, this.currentFloor);
         floor.goToElevator(this);
-    }
-
-    public boolean requestsHere(Building building) {
-        UserQueue users = building.getFloor(currentFloor).getUsers();
-        if (users != null) {
-            for (User user : users) {
-                if (user != null) return true;
-            }
-        }
-        return false;
     }
 
     public boolean requestsAbove(Building building) {
@@ -130,6 +175,30 @@ public class Elevator extends  UserQueue{
             }
         }
         return false;
+    }
+
+    private void simulateDoorOperation() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void simulatePassengerExchange() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void simulateTravelBetweenFloors() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     // Getters and Setters

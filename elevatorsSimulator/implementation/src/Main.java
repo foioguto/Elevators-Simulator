@@ -3,7 +3,6 @@ public class Main {
         Simulator simulator = new Simulator();
 
         simulator.startBuildingManual(6);
-        simulator.setUsersBuilding();
         simulator.setElevators(8, false);
         simulator.simulateElevatorRuns(1);
      }

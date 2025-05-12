@@ -23,7 +23,7 @@ public class Floor {
 
     public void goToElevator(Elevator elevator) {
         while (!users.isEmpty()) {
-            elevator.append(users.removeFirst());
+            elevator.getCurrentUsers().append(users.removeFirst());
         }
     }
 
