@@ -1,8 +1,8 @@
 import dataStructure.Floor;
+import dataStructure.UserQueue;
 import run.Building;
 import run.Elevator;
 import run.User;
-//import dataBank.ConnectionDB;
 
 import java.util.Random;
 
@@ -36,8 +36,31 @@ public class Simulator {
      * Populates each floor with a random number of users (up to 3).
      */
     public void setUsersBuilding() {
-        for (int i = 0; i <= building.getTotalFloors(); i++) {
-            building.getFloor(i).setUsers(building.getTotalFloors(), i);
+        Random random = new Random();
+        int totalFloors = building.getTotalFloors();
+        Floor[] floors = building.getFloors();
+
+        for (Floor floor : floors) {
+            int currentFloor = floor.getFloor();
+            UserQueue userQueue = new UserQueue();
+
+            int numberOfUsers = random.nextInt(6);
+
+            for (int i = 0; i < numberOfUsers; i++) {
+                int nextFloor;
+
+                do {
+                    nextFloor = random.nextInt(totalFloors);
+                } while (nextFloor == currentFloor);
+
+                boolean up = nextFloor > currentFloor;
+                boolean priority = false;
+
+                User user = new User(currentFloor, nextFloor, up, priority);
+                userQueue.append(user);
+            }
+
+            floor.setUsers(userQueue);
         }
     }
 
@@ -60,11 +83,7 @@ public class Simulator {
      * Adds new random user requests on each floor, without removing existing users.
      */
     public void generateNewUserRequests() {
-        for (int i = 0; i < building.getFloors().length; i++) {
-            Floor floor = building.getFloors()[i];
-            User newUser = new User( 0, 3, true, false);
-            floor.bringElevatorToFloor(newUser);
-        }
+
     }
 
     /**
@@ -77,7 +96,7 @@ public class Simulator {
         for (int i = 1; i <= times; i++) {
             System.out.println("CYCLE #" + i);
 
-            generateNewUserRequests();
+            setUsersBuilding();
 
             startElevator();
 

@@ -23,10 +23,6 @@ public class Building {
         return floors[index];
     }
 
-    public Floor[] getFloors() {
-        return floors;
-    }
-
     public Elevator getElevator() {
         return elevator;
     }
@@ -37,5 +33,9 @@ public class Building {
 
     public int getTotalFloors() {
         return totalFloors;
+    }
+
+    public Floor[] getFloors() {
+        return floors;
     }
 }

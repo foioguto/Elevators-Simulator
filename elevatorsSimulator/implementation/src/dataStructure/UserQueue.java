@@ -53,19 +53,18 @@ public class UserQueue implements Iterable<User> {
     }
 
     public User removeFirst() {
-        User removed = head.user;
-
         if (head == null) {
             return null;
         }
+
+        User removed = head.user;
+
         if (head.next == null) {
             head = null;
             tail = null;
         } else {
             head = head.next;
-            head.next.prev = null;
             head.prev = null;
-
         }
 
         decrementSize();

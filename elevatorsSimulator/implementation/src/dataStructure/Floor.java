@@ -13,17 +13,8 @@ public class Floor {
         this.users = new UserQueue();
     }
 
-    public void setUsers(int totalFloors, int actualFloor) {
-        Random rand = new Random();
-        for (int i = 0; i < rand.nextInt(); i++) {
-            int destination;
-            do {
-                destination = rand.nextInt(totalFloors);
-            } while (destination == actualFloor);
-
-            boolean up = destination > actualFloor;
-            users.append(new User(actualFloor, destination, up, false));
-        }
+    public void setUsers(UserQueue users) {
+        this.users = users;
     }
 
     public void bringElevatorToFloor(User user) {
@@ -58,4 +49,5 @@ public class Floor {
     public int getSize() {
         return users.getSize();
     }
+
 }
