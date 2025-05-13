@@ -1,7 +1,5 @@
 package run;
 
-import dataStructure.Floor;
-
 public class Building {
     private int totalFloors;
     private Floor[] floors;

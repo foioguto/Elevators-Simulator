@@ -1,5 +1,5 @@
-import dataStructure.Floor;
-import dataStructure.UserQueue;
+import run.Floor;
+import run.UserQueue;
 import run.Building;
 import run.Elevator;
 import run.User;
@@ -44,7 +44,7 @@ public class Simulator {
             int currentFloor = floor.getFloor();
             UserQueue userQueue = new UserQueue();
 
-            int numberOfUsers = random.nextInt(6);
+            int numberOfUsers = random.nextInt(8);
 
             for (int i = 0; i < numberOfUsers; i++) {
                 int nextFloor;
@@ -67,8 +67,8 @@ public class Simulator {
     /**
      * Initializes the elevator and sets it in the building.
      */
-    public void setElevators(int maxCapacity, boolean priority) {
-        this.elevator = new Elevator(maxCapacity, priority); // max capacity = 8
+    public void setElevators(int maxCapacity) {
+        this.elevator = new Elevator(maxCapacity); // max capacity = 8
         building.setElevator(elevator);
     }
 
@@ -98,12 +98,35 @@ public class Simulator {
 
             setUsersBuilding();
 
+            printBuildingState(building);
+
             startElevator();
 
             System.out.println("END OF CYCLE #" + i + "\n");
         }
 
         System.out.println("Simulation completed.");
+    }
+
+    private void printBuildingState(Building building) {
+        System.out.println("===== Initial Building State =====");
+
+        for (int floorIndex = building.getTotalFloors() - 1; floorIndex >= 0; floorIndex--) {
+            Floor floor = building.getFloor(floorIndex);
+            UserQueue users = floor.getUsers();
+
+            System.out.printf("Floor %2d | Users: ", floorIndex);
+            if (users.getSize() == 0) {
+                System.out.print("None");
+            } else {
+                for (User user : users) {
+                    System.out.print(user.getNextFloor() + " ");
+                }
+            }
+            System.out.println();
+        }
+
+        System.out.println("==================================\n");
     }
 
 }

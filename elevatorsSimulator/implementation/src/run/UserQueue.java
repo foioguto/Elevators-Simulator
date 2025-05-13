@@ -1,6 +1,4 @@
-package dataStructure;
-
-import run.User;
+package run;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

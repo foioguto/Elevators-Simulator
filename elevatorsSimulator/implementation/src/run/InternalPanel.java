@@ -1,4 +1,5 @@
-package dataStructure;
+package run;
+
 
 /**
  * InternalPanel is responsible for handling internal elevator requests

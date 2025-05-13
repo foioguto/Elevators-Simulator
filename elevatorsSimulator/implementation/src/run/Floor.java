@@ -1,16 +1,14 @@
-package dataStructure;
-
-import run.User;
-import run.Elevator;
-import java.util.Random;
+package run;
 
 public class Floor {
     private int floor;
     private UserQueue users;
+    private ExternalPanel extPanel;
 
     public Floor(int floor) {
         this.floor = floor;
         this.users = new UserQueue();
+        this.extPanel = new ExternalPanel();
     }
 
     public void setUsers(UserQueue users) {
@@ -27,17 +25,6 @@ public class Floor {
         }
     }
 
-    public boolean checkUpJoin() {
-        UserQueue.UserNode current = users.getHead();
-        while (current != null) {
-            if (current.user.isUp()) {
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
     public int getFloor() {
         return floor;
     }
@@ -48,6 +35,10 @@ public class Floor {
 
     public int getSize() {
         return users.getSize();
+    }
+
+    public ExternalPanel getExtPanel() {
+        return extPanel;
     }
 
 }

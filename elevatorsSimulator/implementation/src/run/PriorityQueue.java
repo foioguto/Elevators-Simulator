@@ -1,7 +1,4 @@
-package dataStructure;
-
-import run.Elevator;
-import run.User;
+package run;
 
 public class PriorityQueue {
 
