@@ -9,11 +9,13 @@ public class UserQueue implements Iterable<User> {
         public User user;
         public UserNode next;
         public UserNode prev;
+        int priority; // priority 1 > priority 2
 
-        public UserNode(User user) {
+        public UserNode(User user, int priority) {
             this.user = user;
             this.next = null;
             this.prev = null;
+            this.priority = priority;
         }
     }
 
@@ -28,27 +30,38 @@ public class UserQueue implements Iterable<User> {
         size = 0;
     }
 
-    public void append(User user) {
-        UserNode newNode = new UserNode(user);
+    public void append(User user, int priority) {
+        UserNode newNode = new UserNode(user, priority);
+
         if (head == null) {
             head = newNode;
             tail = newNode;
-        } else {
+        }
+        else if (newNode.priority < head.priority) {
+            newNode.next = head;
+            head.prev = newNode;
+            head = newNode;
+        }
+        else if (newNode.priority >= tail.priority) {
+            newNode.prev = tail;
+            tail.next = newNode;
+            tail = newNode;
+        }else {
             UserNode current = head;
-            for (int i = 0; i < getSize(); i++) {
-                if (current == tail) {
-                    current.next = newNode;
-                    newNode.prev = current;
-                    tail = newNode;
-                    break;
+
+            for(int i = 0; i < getSize(); i++) {
+                if (newNode.priority < current.priority) {
+                    newNode.next = current;
+                    newNode.prev = current.prev;
+                    current.prev = newNode;
                 }
                 current = current.next;
             }
         }
 
         incrementSize();
-        return;
     }
+
 
     public User removeFirst() {
         if (head == null) {
@@ -104,6 +117,13 @@ public class UserQueue implements Iterable<User> {
     public void clear() {
         head = null;
         size = 0;
+    }
+
+    public int getPriority() {
+        if (head == null) {
+            return -1;
+        }
+        return head.priority;
     }
 
     @Override

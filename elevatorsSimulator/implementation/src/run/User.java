@@ -8,7 +8,7 @@ public class User {
     private int currentFloor;
     private int nextFloor;
     private boolean up;
-    private boolean priority;
+    private int priority;
 
     /**
      * Creates a new User with the specified floor information and direction.
@@ -16,7 +16,7 @@ public class User {
      * @param nextFloor The floor where the user wants to go
      * @param up true if the user wants to go up, false if going down
      */
-    public User(int currentFloor, int nextFloor, boolean up, boolean priority) {
+    public User(int currentFloor, int nextFloor, boolean up, int priority) {
         this.currentFloor = currentFloor;
         this.nextFloor = nextFloor;
         this.up = up;
@@ -69,6 +69,14 @@ public class User {
      */
     public void setUp(boolean up) {
         this.up = up;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
 }

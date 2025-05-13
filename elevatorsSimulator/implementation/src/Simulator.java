@@ -54,10 +54,17 @@ public class Simulator {
                 } while (nextFloor == currentFloor);
 
                 boolean up = nextFloor > currentFloor;
-                boolean priority = false;
+                int setPrio = random.nextInt(4);
+                int priority = 2;
+                
+                if (setPrio < 4) {
+                priority = 2;
+                } else {
+                    priority = 1;
+                }
 
                 User user = new User(currentFloor, nextFloor, up, priority);
-                userQueue.append(user);
+                userQueue.append(user, priority);
             }
 
             floor.setUsers(userQueue);
@@ -67,7 +74,11 @@ public class Simulator {
     /**
      * Initializes the elevator and sets it in the building.
      */
-    public void setElevators(int maxCapacity) {
+    public void setElevators(int maxCapacity, int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            this.elevator = new Elevator(maxCapacity); // max capacity = 8
+            building.setElevator(elevator);
+        }
         this.elevator = new Elevator(maxCapacity); // max capacity = 8
         building.setElevator(elevator);
     }

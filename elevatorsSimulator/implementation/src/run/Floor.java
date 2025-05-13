@@ -16,12 +16,12 @@ public class Floor {
     }
 
     public void bringElevatorToFloor(User user) {
-        users.append(user);
+        users.append(user, user.getPriority());
     }
 
     public void goToElevator(Elevator elevator) {
         while (!users.isEmpty()) {
-            elevator.getCurrentUsers().append(users.removeFirst());
+            elevator.getCurrentUsers().append(users.removeFirst(), users.getPriority());
         }
     }
 

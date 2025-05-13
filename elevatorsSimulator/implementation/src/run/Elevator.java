@@ -130,7 +130,7 @@ public class Elevator {
     private void boardPassengers(Floor floor) {
         UserQueue floorQueue = floor.getUsers();
         while (!floorQueue.isEmpty() && currentUsers.getSize() < maxCapacity) {
-            currentUsers.append(floorQueue.removeFirst());
+            currentUsers.append(floorQueue.removeFirst(), floorQueue.getPriority());
         }
     }
 
