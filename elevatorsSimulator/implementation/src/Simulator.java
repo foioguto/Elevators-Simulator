@@ -3,33 +3,23 @@ import run.UserQueue;
 import run.Building;
 import run.Elevator;
 import run.User;
-
 import java.util.Random;
-
+import config.parameters;
 /**
  * Controls the simulation of the elevator system in a building.
  * Handles random or manual initialization, user generation and elevator cycles.
  */
 public class Simulator {
-    private final Random random = new Random();
     private Building building;
     private Elevator elevator;
-
-    /**
-     * Initializes the building with a random number of floors (between 2 and 4).
-     */
-    public void startBuildingRandom() {
-        int floorsNumber = 5 + random.nextInt(5); // 2 to 4 floors
-        this.building = new Building(floorsNumber);
-        System.out.println("Building: " + floorsNumber);
-    }
+    private int timeInHours;
 
     /**
      * Initializes the building with a specified number of floors.
      * @param floorsNumber the number of floors to create
      */
-    public void startBuildingManual(int floorsNumber) {
-        this.building = new Building(floorsNumber);
+    public void startBuildingManual(int MAX_FLOORS) {
+        this.building = new Building(MAX_FLOORS);
     }
 
     /**
@@ -54,11 +44,12 @@ public class Simulator {
                 } while (nextFloor == currentFloor);
 
                 boolean up = nextFloor > currentFloor;
-                int setPrio = random.nextInt(4);
+                int setPrio = random.nextInt(parameters.PRIORITY_RARITY);
                 int priority = 2;
                 
-                if (setPrio < 4) {
+                if (setPrio < parameters.PRIORITY_RARITY) {
                 priority = 2;
+
                 } else {
                     priority = 1;
                 }
@@ -104,7 +95,8 @@ public class Simulator {
     public void simulateElevatorRuns(int times) {
         System.out.println("Starting simulation with " + times + " elevator cycles...\n");
 
-        for (int i = 1; i <= times; i++) {
+        while (timeInHours < times) {
+            int i = timeInHours + parameters.START_TIME;
             System.out.println("CYCLE #" + i);
 
             setUsersBuilding();
@@ -112,6 +104,10 @@ public class Simulator {
             printBuildingState(building);
 
             startElevator();
+
+            if (elevator.getTotalTime() == 60) {
+                timeInHours++;
+            }
 
             System.out.println("END OF CYCLE #" + i + "\n");
         }
@@ -138,6 +134,13 @@ public class Simulator {
         }
 
         System.out.println("==================================\n");
+    }
+
+    public void setTimeInHours(int timeInHours) {
+        this.timeInHours = timeInHours;
+    }
+    public int getTimeInHours() {
+        return timeInHours;
     }
 
 }

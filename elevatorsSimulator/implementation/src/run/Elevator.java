@@ -1,12 +1,14 @@
 package run;
+import config.parameters;
 
 public class Elevator {
     private final int maxCapacity;
     private final InternalPanel intPanel;
-    private final ExternalPanel extPanel;
     private ElevatorState state;
     private UserQueue currentUsers;
     private int currentFloor;
+    private int totalEnergy;
+    private int totalTime;
 
     public enum ElevatorState {
         IDLE(0),
@@ -30,7 +32,8 @@ public class Elevator {
         this.maxCapacity = maxCapacity;
         this.currentUsers = new UserQueue();
         this.intPanel = new InternalPanel();
-        this.extPanel = new ExternalPanel();
+        this.totalEnergy = 0;
+        this.totalTime = 0;
     }
 
     public void move(Building building) {
@@ -161,6 +164,9 @@ public class Elevator {
     private void simulateDoorOperation() {
         try {
             Thread.sleep(1000);
+
+            increaseEnergy();
+            increaseTime();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -177,9 +183,19 @@ public class Elevator {
     private void simulateTravelBetweenFloors() {
         try {
             Thread.sleep(2000);
+
+            increaseEnergy();
+            increaseTime();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+    public int increaseTime() {
+        return totalTime += parameters.TIME;
+    }
+
+    public int increaseEnergy() {
+        return totalEnergy += parameters.ENERGY_CONSUMPTION;
     }
 
     // Getters and Setters
@@ -211,5 +227,15 @@ public class Elevator {
     public int getMaxCapacity() {
         return maxCapacity;
     }
-
+    
+    public InternalPanel getIntPanel() {
+        return intPanel;
+    }
+    public int getTotalEnergy() {
+        return totalEnergy;
+    }   
+    public int getTotalTime() {
+        return totalTime;
+    }
+    
 }

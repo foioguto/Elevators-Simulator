@@ -1,9 +1,11 @@
+import config.parameters;
+
 public class Main {
     public static void main(String[] args) {
         Simulator simulator = new Simulator();
 
-        simulator.startBuildingManual(5);
-        simulator.setElevators(8, 2);
-        simulator.simulateElevatorRuns(1);
+        simulator.startBuildingManual(parameters.MAX_FLOORS);
+        simulator.setElevators(parameters.MAX_CAPACITY, parameters.MAX_ELEVATORS);
+        simulator.simulateElevatorRuns(parameters.END_TIME - parameters.START_TIME);
      }
 }
