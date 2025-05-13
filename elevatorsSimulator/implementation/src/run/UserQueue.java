@@ -126,6 +126,13 @@ public class UserQueue implements Iterable<User> {
         return head.priority;
     }
 
+    public User getFirst() {
+        if (head == null) {
+            return null;
+        }
+        return head.user;
+    }
+
     @Override
     public Iterator<User> iterator() {
         return new Iterator<User>() {

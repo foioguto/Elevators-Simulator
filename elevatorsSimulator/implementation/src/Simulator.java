@@ -85,7 +85,17 @@ public class Simulator {
      * Adds new random user requests on each floor, without removing existing users.
      */
     public void generateNewUserRequests() {
-
+        for (int floorIndex = building.getTotalFloors() - 1; floorIndex >= 0; floorIndex--) {
+            Floor floor = building.getFloor(floorIndex);
+            UserQueue users = floor.getUsers();
+            Random random = new Random();
+            User current = users.getFirst();
+            do{
+                current.setNextFloor(random.nextInt(building.getTotalFloors()));
+            }while (current.getNextFloor() == current.getCurrentFloor());
+        }
+         
+            
     }
 
     /**
