@@ -7,6 +7,7 @@ public class Elevator {
     private ElevatorState state;
     private UserQueue currentUsers;
     private int currentFloor;
+    private int elevatorNumber;
     private int totalEnergy;
     private int totalTime;
 
@@ -26,7 +27,7 @@ public class Elevator {
         }
     }
 
-    public Elevator(int maxCapacity) {
+    public Elevator(int maxCapacity, int elevatorNumber) {
         this.currentFloor = 0;
         this.state = ElevatorState.IDLE;
         this.maxCapacity = maxCapacity;
@@ -34,6 +35,7 @@ public class Elevator {
         this.intPanel = new InternalPanel();
         this.totalEnergy = 0;
         this.totalTime = 0;
+        this.elevatorNumber = elevatorNumber;
     }
 
     public void move(Building building) {
@@ -46,7 +48,8 @@ public class Elevator {
             logElevatorStatus("Before");
 
             Floor floor = building.getFloor(currentFloor);
-            boolean wantsToEnter = floor.getExtPanel().wantsToEnterHere(floor, building, getElevator());
+            Elevator elevator = building.getElevator(elevatorNumber);
+            boolean wantsToEnter = floor.getExtPanel().wantsToEnterHere(floor, building, elevator);
             boolean wantsToExit = intPanel.wantsToExitHere(currentUsers, currentFloor);
 
             if (wantsToEnter || wantsToExit) {
@@ -87,8 +90,8 @@ public class Elevator {
             System.out.println("\n================== Elevator Status ==================");
         }
 
-        System.out.printf("%s | Floor: %d | Passengers: %d | State: %s%n",
-                phase, currentFloor, currentUsers.getSize(), state);
+        System.out.printf("%s |Elevator: %d | Floor: %d | Passengers: %d | State: %s%n",
+                phase, elevatorNumber, currentFloor, currentUsers.getSize(), state);
 
         StringBuilder inside = new StringBuilder();
         for (User user : currentUsers) {
@@ -238,8 +241,8 @@ public class Elevator {
         return totalTime;
     }
 
-    public Elevator getElevator() {
-        return this;
+    public int getElevatorNumber() {
+        return this.elevatorNumber;
     }
 
 }

@@ -22,6 +22,10 @@ public class Building {
         return floors[index];
     }
 
+    public Elevator getElevator(int index) {
+        return elevators[index];
+    }
+
     public Elevator[] getElevators() {
         return elevators;
     }

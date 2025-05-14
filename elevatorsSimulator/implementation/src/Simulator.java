@@ -45,10 +45,10 @@ public class Simulator {
         }
     }
 
-    public void setElevators(int maxCapacity, int quantity) {
-        this.elevators = new Elevator[quantity];
-        for (int i = 0; i < quantity; i++) {
-            this.elevators[i] = new Elevator(maxCapacity);
+    public void generateElevators(int maxCapacity, int MAX_ELEVATORS) {
+        this.elevators = new Elevator[MAX_ELEVATORS];
+        for (int i = 0; i < MAX_ELEVATORS; i++) {
+            this.elevators[i] = new Elevator(maxCapacity, i);
         }
         building.setElevators(elevators);
     }
@@ -115,11 +115,21 @@ public class Simulator {
         System.out.println("==================================\n");
     }
 
+    public void startRun (Building building) {
+        for (int i = 0; i < building.getNumElevators(); i++) {
+            simulateElevatorRuns(parameters.END_TIME - parameters.START_TIME, building.getElevator(i).getElevatorNumber());
+        }
+    }
+
     public void setTimeInHours(int timeInHours) {
         this.timeInHours = timeInHours;
     }
 
     public int getTimeInHours() {
         return timeInHours;
+    }
+
+    public Building getBuilding() {
+        return building;
     }
 }
