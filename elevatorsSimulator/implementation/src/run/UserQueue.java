@@ -68,7 +68,7 @@ public class UserQueue implements Iterable<User> {
     }
 
 
-    public User removeFirst() {
+    public synchronized User removeFirst() {
         if (head == null) {
             return null;
         }

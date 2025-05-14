@@ -1,7 +1,8 @@
 package run;
 import config.parameters;
 
-public class Elevator {
+public class Elevator implements Runnable{
+    private Building building;
     private final int maxCapacity;
     private final InternalPanel intPanel;
     private ElevatorState state;
@@ -245,4 +246,12 @@ public class Elevator {
         return this.elevatorNumber;
     }
 
+    public void setBuilding(Building building) {
+        this.building = building;
+    }
+
+    @Override
+    public void run() {
+        move(this.building);
+    }
 }

@@ -55,7 +55,9 @@ public class Simulator {
 
     public void startElevator() {
         for (Elevator elevator : elevators) {
-            elevator.move(building);
+            elevator.setBuilding(building);
+            Thread thread = new Thread(elevator);
+            thread.start();
         }
     }
 
