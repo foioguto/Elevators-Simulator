@@ -36,30 +36,35 @@ public class UserQueue implements Iterable<User> {
         if (head == null) {
             head = newNode;
             tail = newNode;
-        }
-        else if (newNode.priority < head.priority) {
-            newNode.next = head;
-            head.prev = newNode;
-            head = newNode;
-        }
-        else if (newNode.priority >= tail.priority) {
-            newNode.prev = tail;
-            tail.next = newNode;
-            tail = newNode;
         }else {
             UserNode current = head;
 
-            for(int i = 0; i < getSize(); i++) {
+            while (current != null) {
                 if (newNode.priority < current.priority) {
                     newNode.next = current;
                     newNode.prev = current.prev;
+
+                    if (current.prev != null) {
+                        current.prev.next = newNode;
+                    }
                     current.prev = newNode;
+
+                    if (current == head) {
+                        head = newNode;
+                    }
+
+                    incrementSize();
+                    return;
                 }
+
                 current = current.next;
             }
-        }
 
-        incrementSize();
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+            incrementSize();
+        }
     }
 
 
