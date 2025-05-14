@@ -46,7 +46,7 @@ public class Elevator {
             logElevatorStatus("Before");
 
             Floor floor = building.getFloor(currentFloor);
-            boolean wantsToEnter = floor.getExtPanel().wantsToEnterHere(floor, building, building.getElevator());
+            boolean wantsToEnter = floor.getExtPanel().wantsToEnterHere(floor, building, getElevator());
             boolean wantsToExit = intPanel.wantsToExitHere(currentUsers, currentFloor);
 
             if (wantsToEnter || wantsToExit) {
@@ -237,5 +237,9 @@ public class Elevator {
     public int getTotalTime() {
         return totalTime;
     }
-    
+
+    public Elevator getElevator() {
+        return this;
+    }
+
 }

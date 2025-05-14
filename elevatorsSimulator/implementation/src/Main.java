@@ -6,6 +6,8 @@ public class Main {
 
         simulator.startBuildingManual(parameters.MAX_FLOORS);
         simulator.setElevators(parameters.MAX_CAPACITY, parameters.MAX_ELEVATORS);
-        simulator.simulateElevatorRuns(parameters.END_TIME - parameters.START_TIME);
+        for (int i = 0; i < parameters.MAX_ELEVATORS; i++) {
+            simulator.simulateElevatorRuns(parameters.END_TIME - parameters.START_TIME, i);
+        }
      }
 }

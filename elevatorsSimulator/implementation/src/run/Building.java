@@ -3,7 +3,8 @@ package run;
 public class Building {
     private int totalFloors;
     private Floor[] floors;
-    private Elevator elevator;
+    private Elevator[] elevators;
+    private int numElevators;
 
     public Building(int totalFloors) {
         this.totalFloors = totalFloors;
@@ -21,12 +22,13 @@ public class Building {
         return floors[index];
     }
 
-    public Elevator getElevator() {
-        return elevator;
+    public Elevator[] getElevators() {
+        return elevators;
     }
 
-    public void setElevator(Elevator elevator) {
-        this.elevator = elevator;
+    public void setElevators(Elevator[] elevators) {
+        this.elevators = elevators;
+        this.numElevators = elevators.length;
     }
 
     public int getTotalFloors() {
@@ -35,5 +37,9 @@ public class Building {
 
     public Floor[] getFloors() {
         return floors;
+    }
+
+    public int getNumElevators() {
+        return numElevators;
     }
 }

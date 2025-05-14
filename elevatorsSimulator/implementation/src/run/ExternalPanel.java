@@ -1,9 +1,7 @@
 package run;
 
 public class ExternalPanel {
-
     public ExternalPanel() {
-
     }
 
     public boolean wantsToEnterHere(Floor floor, Building building, Elevator elevator) {
@@ -32,5 +30,4 @@ public class ExternalPanel {
         }
         return false;
     }
-
 }
