@@ -30,7 +30,7 @@ public class UserQueue implements Iterable<User> {
         size = 0;
     }
 
-    public void append(User user, int priority) {
+    public synchronized void append(User user, int priority) {
         UserNode newNode = new UserNode(user, priority);
 
         if (head == null) {
