@@ -9,7 +9,7 @@ import config.parameters;
 public class Simulator {
     private Building building;
     private Elevator[] elevators;
-    private int timeInHours;
+    private int timeInHours = 0;
     private int totalPeople;
 
     public void startBuildingManual(int MAX_FLOORS) {
@@ -68,10 +68,15 @@ public class Simulator {
             Floor floor = building.getFloor(floorIndex);
             UserQueue users = floor.getUsers();
             if (users.getFirst() != null) {
+                EventsList eventsList = new EventsList();
                 Random random = new Random();
                 User current = users.getFirst();
+
                 do {
-                    current.setNextFloor(random.nextInt(building.getTotalFloors()));
+                    current.setNextFloor(random.nextInt(0, (building.getTotalFloors() -3)));
+                     if (current.getCurrentFloor() == 0 && current.getNextFloor() == 0) {
+                        eventsList.setEvents(2);
+                    }
                 } while (current.getNextFloor() == current.getCurrentFloor());
             }
         }
@@ -80,9 +85,10 @@ public class Simulator {
     public void simulateElevatorRuns(int times, int elevatorNumber) {
         System.out.println("Starting simulation with " + times + " elevator cycles...\n");
 
-        while (timeInHours < times) {
-            int i = timeInHours + parameters.START_TIME;
-            System.out.println("CYCLE #" + i);
+        int i = timeInHours + parameters.START_TIME;
+
+        while (i < times) {
+            System.out.println("CYCLE #" + timeInHours);
 
             setUsersBuilding();
             printBuildingState(building);
@@ -93,9 +99,10 @@ public class Simulator {
                 elevators[0].resetTotalTime();
             }
 
-            System.out.println("END OF CYCLE #" + i + "\n");
+            System.out.println("END OF CYCLE #" + timeInHours + "\n");
         }
 
+        generateLogs(building);
         System.out.println("Simulation completed.");
     }
 
@@ -126,7 +133,7 @@ public class Simulator {
         }
     }
 
-    public void generateLogs(Elevator elevator, Building building) {
+    public void generateLogs(Building building) {
         int total = 0;
         for (int i = 0; i < building.getNumElevators(); i++) {
             System.out.println("Elevator " + elevators[i] + " Energy spent:" + elevators[i].getTotalEnergy());

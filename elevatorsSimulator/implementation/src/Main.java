@@ -13,10 +13,6 @@ public class Main {
             if (simulator.getTimeInHours() % 2 == 0) {
                 eventsList.setEvents(1);
             }
-
-            if (simulator.getTimeInHours() % 2 == 1) {
-                eventsList.setEvents(1);
-            }
         }
      }
 }
