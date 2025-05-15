@@ -86,6 +86,25 @@ public class UserQueue implements Iterable<User> {
         decrementSize();
         return removed;
     }
+    
+      public synchronized User removeLast() {
+        if (head == null) {
+            return null;
+        }
+
+        User removed = tail.user;
+
+        if (tail.prev == null) {
+            head = null;
+            tail = null;
+        } else {
+            tail = tail.prev;
+            tail.next = null;
+        }
+
+        decrementSize();
+        return removed;
+    }
 
     public boolean isEmpty() {
         return size == 0;

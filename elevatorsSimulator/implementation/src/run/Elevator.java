@@ -167,7 +167,7 @@ public class Elevator implements Runnable{
 
     private void simulateDoorOperation() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(parameters.DELAY);
 
             increaseEnergy();
             increaseTime();
@@ -178,7 +178,7 @@ public class Elevator implements Runnable{
 
     private void simulatePassengerExchange() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(parameters.DELAY);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -186,7 +186,7 @@ public class Elevator implements Runnable{
 
     private void simulateTravelBetweenFloors() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(parameters.DELAY);
 
             increaseEnergy();
             increaseTime();
@@ -240,6 +240,10 @@ public class Elevator implements Runnable{
     }   
     public int getTotalTime() {
         return totalTime;
+    }
+
+    public void resetTotalTime() {
+        this.totalTime = 0;
     }
 
     public int getElevatorNumber() {

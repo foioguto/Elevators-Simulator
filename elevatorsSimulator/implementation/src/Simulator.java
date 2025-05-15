@@ -10,6 +10,7 @@ public class Simulator {
     private Building building;
     private Elevator[] elevators;
     private int timeInHours;
+    private int totalPeople;
 
     public void startBuildingManual(int MAX_FLOORS) {
         this.building = new Building(MAX_FLOORS);
@@ -25,6 +26,7 @@ public class Simulator {
             UserQueue userQueue = new UserQueue();
 
             int numberOfUsers = random.nextInt(8);
+            totalPeople += numberOfUsers;
 
             for (int i = 0; i < numberOfUsers; i++) {
                 int nextFloor;
@@ -85,9 +87,10 @@ public class Simulator {
             setUsersBuilding();
             printBuildingState(building);
             startElevator();
-
-            if (elevators[elevatorNumber].getTotalTime() % 60 == 0) {
+            
+            if (elevators[0].getTotalTime() >= 60) { //just the first elevator counts the time 
                 timeInHours++;
+                elevators[0].resetTotalTime();
             }
 
             System.out.println("END OF CYCLE #" + i + "\n");
@@ -123,6 +126,17 @@ public class Simulator {
         }
     }
 
+    public void generateLogs(Elevator elevator, Building building) {
+        int total = 0;
+        for (int i = 0; i < building.getNumElevators(); i++) {
+            System.out.println("Elevator " + elevators[i] + " Energy spent:" + elevators[i].getTotalEnergy());
+            total += elevators[i].getTotalEnergy();
+        }
+        System.out.println("Total users transported: " + totalPeople);
+        System.out.println("Total energy spent: " + total);
+        System.out.println("Total cost: " + (total * parameters.COST_PER_KWH));
+    }
+
     public void setTimeInHours(int timeInHours) {
         this.timeInHours = timeInHours;
     }
@@ -133,5 +147,13 @@ public class Simulator {
 
     public Building getBuilding() {
         return building;
+    }
+
+    public int getTotalPeople() {
+        return totalPeople;
+    }
+
+    public void setTotalPeople(int totalPeople) {
+        this.totalPeople = totalPeople;
     }
 }

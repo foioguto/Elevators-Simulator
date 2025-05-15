@@ -16,4 +16,8 @@ public class parameters {
     public static final int START_TIME = 6; // Start time of the simulation (in hours)
 
     public static final int END_TIME = 22; // End time of the simulation (in hours)
+
+    public static final double COST_PER_KWH = 0.3; // Cost per kWh (in california, USA, it's around $0.30 per kWh)
+
+    public static final int DELAY = 1000; // Miliseconds
 }
