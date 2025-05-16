@@ -198,7 +198,7 @@ public class Elevator implements Runnable{
         return totalTime += parameters.TIME;
     }
 
-    public int increaseEnergy() {
+    public synchronized int increaseEnergy() {
         return totalEnergy += parameters.ENERGY_CONSUMPTION;
     }
 

@@ -7,6 +7,7 @@ public class EventsList {
     
     public void setEvents(int event) {
         Simulator simulator = new Simulator();
+        setEvent(event);
     
         switch(getEvent()){
             case 1:
@@ -16,7 +17,7 @@ public class EventsList {
                 simulator.getBuilding().getFloor(0).getUsers().removeLast();
                 break;
             case 3:
-                simulator.getBuilding().getElevator(0).setCurrentUsers(null);
+                simulator.generateNewUserRequests();
                 break;
             default:
             System.out.println("Error!!!");

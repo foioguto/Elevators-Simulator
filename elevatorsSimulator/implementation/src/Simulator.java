@@ -55,12 +55,11 @@ public class Simulator {
         building.setElevators(elevators);
     }
 
-    public void startElevator() {
-        for (Elevator elevator : elevators) {
-            elevator.setBuilding(building);
-            Thread thread = new Thread(elevator);
-            thread.start();
-        }
+    public void startElevator(Elevator elevator) {
+        elevator.setBuilding(building);
+        Thread thread = new Thread(elevator);
+        thread.start();
+    
     }
 
     public void generateNewUserRequests() {
@@ -82,17 +81,17 @@ public class Simulator {
         }
     }
 
-    public void simulateElevatorRuns(int times, int elevatorNumber) {
+    public void simulateElevatorRuns(int times, Elevator elevator) {
         System.out.println("Starting simulation with " + times + " elevator cycles...\n");
 
         int i = timeInHours + parameters.START_TIME;
+        startElevator(elevator);
 
         while (i < times) {
             System.out.println("CYCLE #" + timeInHours);
 
             setUsersBuilding();
             printBuildingState(building);
-            startElevator();
             
             if (elevators[0].getTotalTime() >= 60) { //just the first elevator counts the time 
                 timeInHours++;
@@ -129,7 +128,7 @@ public class Simulator {
 
     public void startRun (Building building) {
         for (int i = 0; i < building.getNumElevators(); i++) {
-            simulateElevatorRuns(parameters.END_TIME - parameters.START_TIME, building.getElevator(i).getElevatorNumber());
+            simulateElevatorRuns(parameters.END_TIME - parameters.START_TIME, building.getElevator(i));
         }
     }
 
@@ -144,8 +143,8 @@ public class Simulator {
         System.out.println("Total cost: " + (total * parameters.COST_PER_KWH));
     }
 
-    public void setTimeInHours(int timeInHours) {
-        this.timeInHours = timeInHours;
+    public void increasetTimeInHours() {
+        timeInHours++;
     }
 
     public int getTimeInHours() {

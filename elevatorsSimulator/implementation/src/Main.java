@@ -12,6 +12,7 @@ public class Main {
         while(simulator.getTimeInHours() < parameters.END_TIME - parameters.START_TIME) {
             if (simulator.getTimeInHours() % 2 == 0) {
                 eventsList.setEvents(1);
+                simulator.increasetTimeInHours();
             }
         }
      }
