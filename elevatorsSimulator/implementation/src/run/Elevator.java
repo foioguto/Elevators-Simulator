@@ -11,6 +11,8 @@ public class Elevator implements Runnable{
     private int elevatorNumber;
     private int totalEnergy;
     private int totalTime;
+    private volatile boolean running = true; // controls the loop thread
+
 
     public enum ElevatorState {
         IDLE(0),
@@ -130,24 +132,24 @@ public class Elevator implements Runnable{
     }
 
     public void handleDoorsAtCurrentFloor(UserQueue currentUsers, Floor floor) {
-        intPanel.detectExitRequests(currentUsers, this.currentFloor);
+        intPanel.exitElevator(currentUsers, this.currentFloor);
         boardPassengers(floor);
     }
 
     private void boardPassengers(Floor floor) {
         UserQueue floorQueue = floor.getUsers();
         while (!floorQueue.isEmpty() && currentUsers.getSize() < maxCapacity) {
-            currentUsers.append(floorQueue.removeFirst(), floorQueue.getPriority());
+            User user = floorQueue.removeFirst();
+            user.setWaiting(false); // Crie isso na classe User
+            currentUsers.append(user, floorQueue.getPriority());
         }
     }
 
     public boolean requestsAbove(Building building) {
         for (int i = currentFloor + 1; i < building.getFloors().length; i++) {
             UserQueue users = building.getFloor(i).getUsers();
-            if (users != null) {
-                for (User user : users) {
-                    if (user != null) return true;
-                }
+            if (users != null && users.hasWaitingUsers()) {
+              return true;
             }
         }
         return false;
@@ -156,10 +158,8 @@ public class Elevator implements Runnable{
     public boolean requestsBelow(Building building) {
         for (int i = 0; i < currentFloor; i++) {
             UserQueue users = building.getFloor(i).getUsers();
-            if (users != null) {
-                for (User user : users) {
-                    if (user != null && !user.isUp()) return true;
-                }
+            if (users != null && users.hasWaitingUsers()) {
+               return true;
             }
         }
         return false;
@@ -254,8 +254,14 @@ public class Elevator implements Runnable{
         this.building = building;
     }
 
+    public void stopElevatorRun() {
+    this.running = false;
+}
+
     @Override
     public void run() {
-        move(this.building);
+        while (running) {
+            move(this.building);
+        }
     }
 }

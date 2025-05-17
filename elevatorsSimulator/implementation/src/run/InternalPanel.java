@@ -1,6 +1,5 @@
 package run;
 
-
 /**
  * InternalPanel is responsible for handling internal elevator requests
  * made by passengers already inside the elevator.
@@ -8,7 +7,7 @@ package run;
 public class InternalPanel {
 
     public InternalPanel() {
-        // No specific initialization required
+        
     }
 
     /**
@@ -77,7 +76,7 @@ public class InternalPanel {
      * @param currentUsers List of users currently in the elevator.
      * @param currentFloor The current floor of the elevator.
      */
-    public void detectExitRequests(UserQueue currentUsers, int currentFloor) {
+    public void exitElevator(UserQueue currentUsers, int currentFloor) {
         UserQueue.UserNode current = currentUsers.getHead();
         UserQueue.UserNode prev = null;
 
@@ -95,10 +94,12 @@ public class InternalPanel {
 
                 currentUsers.decrementSize();
                 current = (prev == null) ? currentUsers.getHead() : prev.next;
+                current.user.setWaiting(false);
             } else {
                 prev = current;
                 current = current.next;
             }
         }
     }
+
 }

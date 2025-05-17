@@ -106,6 +106,16 @@ public class UserQueue implements Iterable<User> {
         return removed;
     }
 
+    public boolean hasWaitingUsers() {
+    for (User user : this) {
+        if (user.isWaiting() == true) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
     public boolean isEmpty() {
         return size == 0;
     }
