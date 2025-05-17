@@ -54,7 +54,7 @@ public class UserEvents {
             UserQueue users = floor.getUsers();
 
             if (users.getFirst() != null) {
-                EventsList eventsList = new EventsList(building);
+                EventsList eventsList = new EventsList();
                 Random random = new Random();
                 User current = users.getFirst();
 

@@ -1,7 +1,6 @@
 package simulator;
 
 import run.Building;
-import run.Elevator;
 import config.parameters;
 import run.Array;
 import simulator.events.BuildingEvents;
@@ -28,7 +27,10 @@ public class EventsList {
 
         setEvent(eventsArray.getElement(0));
     
-        switch(getEvent()){
+        switch(getEvent()) {
+            case "startBuildingManual":
+                buildingEvents.startBuildingManual(parameters.MAX_FLOORS);
+                break;
             case "setUsersBuilding":
                 userEvents.setUsersBuilding();
                 break;
@@ -58,6 +60,20 @@ public class EventsList {
         }
 
         eventsArray.remove(0);
+    }
+
+    public void callTimeEvents() {
+        BuildingEvents buildingEvents = new BuildingEvents(building);
+        UserEvents userEvents = new UserEvents(building);
+        ElevatorsEvents elevatorsEvents = new ElevatorsEvents(building, building.getElevators());
+
+
+        while(elevatorsEvents.getTimeInHours() < parameters.END_TIME - parameters.START_TIME) {
+            if (elevatorsEvents.getTimeInHours() % 2 == 0) {
+                this.setEvent("setUsersBuilding");
+                this.callEvent();
+            }
+        }
     }
 
     public String getEvent(){
