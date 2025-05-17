@@ -1,8 +1,11 @@
 package simulator;
 
 import run.Building;
+import run.Elevator;
+import config.parameters;
 import run.Array;
 import simulator.events.BuildingEvents;
+import simulator.events.ElevatorsEvents;
 import simulator.events.UserEvents;
 
 public class EventsList {
@@ -10,8 +13,7 @@ public class EventsList {
     private String event;
     private Building building;
 
-    public EventsList(Building building) {
-        this.building = building;
+    public EventsList() {
         eventsArray = new Array<>(100);
     }
     
@@ -22,6 +24,8 @@ public class EventsList {
     public void callEvent() {
         BuildingEvents buildingEvents = new BuildingEvents(building);
         UserEvents userEvents = new UserEvents(building);
+        ElevatorsEvents elevatorsEvents = new ElevatorsEvents(building, building.getElevators());
+
         setEvent(eventsArray.getElement(0));
     
         switch(getEvent()){
@@ -36,11 +40,20 @@ public class EventsList {
                 break;
             case "printBuildingState":
                 buildingEvents.printBuildingState();    
+                break;
+            case "startElevator":
+            for (int i = 0; i < parameters.MAX_ELEVATORS; i++) {    
+                elevatorsEvents.startElevator(building.getElevator(i));;
+            }    
+                break;
+            case "startRun":
+                elevatorsEvents.startRun();
+                break;    
             default:
             System.out.println("Invalid Event Name!");
             break;
         }
-        
+
         eventsArray.remove(0);
     }
 
