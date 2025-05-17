@@ -5,6 +5,9 @@ public class Main {
     public static void main(String[] args) {
         EventsList eventsList = new EventsList();
 
+         eventsList.setEvent("generateElevators");
+        eventsList.callEvent();
+
         eventsList.setEvent("startElevator");
         eventsList.callEvent();
 

@@ -40,6 +40,9 @@ public class EventsList {
             case "printBuildingState":
                 buildingEvents.printBuildingState();    
                 break;
+            case "generateElevators":
+                elevatorsEvents.generateElevators(parameters.MAX_CAPACITY, parameters.MAX_ELEVATORS);
+                break;    
             case "startElevator":
             for (int i = 0; i < parameters.MAX_ELEVATORS; i++) {    
                 elevatorsEvents.startElevator(building.getElevator(i));;
