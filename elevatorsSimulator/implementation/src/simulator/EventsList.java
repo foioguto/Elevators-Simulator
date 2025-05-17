@@ -49,6 +49,9 @@ public class EventsList {
             case "startRun":
                 elevatorsEvents.startRun();
                 break;    
+            case "stopAllElevators":
+                elevatorsEvents.stopAllElevators();
+                break;
             default:
             System.out.println("Invalid Event Name!");
             break;
