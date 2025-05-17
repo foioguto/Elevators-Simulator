@@ -2,15 +2,17 @@ package simulator.events;
 
 import run.Building;
 import run.Elevator;
+import run.Array;
 import config.parameters;
 
 public class ElevatorsEvents {
-    private Thread[] elevatorThreads;
+    private Array<Thread> elevatorThreads;
     private Elevator[] elevators;
     private Building building;
     private int timeInHours = 0;
 
     public ElevatorsEvents(Building building, Elevator[] elevators) {
+        elevatorThreads = new Array<>(100);
         this.building = building;
         this.elevators = elevators;
     }
@@ -26,7 +28,7 @@ public class ElevatorsEvents {
     public void startElevator(Elevator elevator) {
         elevator.setBuilding(building);
         Thread thread = new Thread(elevator);
-        // elevatorThreads[i] = new Thread(elevators[i]);
+        elevatorThreads.append(thread);
         thread.start();
     }
 

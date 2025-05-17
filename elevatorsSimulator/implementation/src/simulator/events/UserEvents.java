@@ -54,7 +54,7 @@ public class UserEvents {
             UserQueue users = floor.getUsers();
 
             if (users.getFirst() != null) {
-                EventsList eventsList = new EventsList();
+                EventsList eventsList = new EventsList(building);
                 Random random = new Random();
                 User current = users.getFirst();
 
@@ -62,7 +62,7 @@ public class UserEvents {
                     do {
                         current.setNextFloor(random.nextInt(0, building.getTotalFloors() - 3));
                         if (current.getCurrentFloor() == 0 && current.getNextFloor() == 0) {
-                            eventsList.setEvents(2);
+                            eventsList.callEvents(2);
                         }
                     } while (current.getNextFloor() == current.getCurrentFloor());
                     current.setWaiting(true);
