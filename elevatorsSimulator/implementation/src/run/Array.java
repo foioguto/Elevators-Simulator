@@ -13,23 +13,37 @@ public class Array<T> {
 
     public void append(T element) {
         if (size >= elements.length) {
-            throw new RuntimeException("Max size excedeed");
+            throw new RuntimeException("Max size excedeed!");
         }
         elements[size++] = element;
     }
 
-    public T get(int index) {
+   public void remove(int p) {
+    if (p < 0 || p >= size) {
+        throw new IndexOutOfBoundsException("Invalid index!");
+    }
+
+    for (int i = p; i < size - 1; i++) {
+        elements[i] = elements[i + 1];
+    }
+
+    elements[size - 1] = null;
+    size--;
+}
+
+
+    public T getElement(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Invalid index");
+            throw new IndexOutOfBoundsException("Invalid index!");
         }
         return elements[index];
     }
 
-    public int tamanho() {
+    public int getSize() {
         return size;
     }
 
-    public void imprimirTodos() {
+    public void printAll() {
         for (int i = 0; i < size; i++) {
             System.out.println(elements[i]);
         }

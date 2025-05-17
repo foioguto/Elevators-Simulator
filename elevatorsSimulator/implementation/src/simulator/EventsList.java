@@ -19,10 +19,10 @@ public class EventsList {
         eventsArray.append(eventName);
     }
 
-    public void callEvents(String eventName) {
+    public void callEvent() {
         BuildingEvents buildingEvents = new BuildingEvents(building);
         UserEvents userEvents = new UserEvents(building);
-        setEvent(eventName);
+        setEvent(eventsArray.getElement(0));
     
         switch(getEvent()){
             case "setUsersBuilding":
@@ -37,10 +37,11 @@ public class EventsList {
             case "printBuildingState":
                 buildingEvents.printBuildingState();    
             default:
-            System.out.println("Error!!!");
+            System.out.println("Invalid Event Name!");
             break;
         }
-
+        
+        eventsArray.remove(0);
     }
 
     public String getEvent(){
