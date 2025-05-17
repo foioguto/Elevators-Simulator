@@ -62,7 +62,8 @@ public class UserEvents {
                     do {
                         current.setNextFloor(random.nextInt(0, building.getTotalFloors() - 3));
                         if (current.getCurrentFloor() == 0 && current.getNextFloor() == 0) {
-                            eventsList.callEvents(2);
+                            eventsList.setEvent("exitBuilding");
+                            eventsList.callEvent();
                         }
                     } while (current.getNextFloor() == current.getCurrentFloor());
                     current.setWaiting(true);
