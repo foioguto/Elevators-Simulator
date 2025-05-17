@@ -9,14 +9,14 @@ import simulator.events.UserEvents;
 
 public class EventsList {
     private Array<String> eventsArray;
-    private String event;
-    private Building building;
+    private Building building = new Building(parameters.MAX_FLOORS);
+
 
     public EventsList() {
         eventsArray = new Array<>(100);
     }
     
-    public void setEvent(String eventName, int priority) {
+    public void setEvent(String eventName) {
         eventsArray.append(eventName);
     }
 
@@ -25,12 +25,9 @@ public class EventsList {
         UserEvents userEvents = new UserEvents(building);
         ElevatorsEvents elevatorsEvents = new ElevatorsEvents(building, building.getElevators());
 
-        setEvent(eventsArray.getElement(0));
-    
-        switch(getEvent()) {
-            case "startBuildingManual":
-                buildingEvents.startBuildingManual(parameters.MAX_FLOORS);
-                break;
+        String event = eventsArray.getElement(0);
+
+        switch(event) {
             case "setUsersBuilding":
                 userEvents.setUsersBuilding();
                 break;
@@ -75,14 +72,5 @@ public class EventsList {
             }
         }
     }
-
-    public String getEvent(){
-        return this.event;
-    }
-
-    public void setEvent(String eventName){
-        this.event = eventName;
-    }
-
 
 }
