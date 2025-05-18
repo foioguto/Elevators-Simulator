@@ -41,13 +41,8 @@ public class EventsList {
                 buildingEvents.printBuildingState();    
                 break;
             case "generateElevators":
-                elevatorsEvents.generateElevators(parameters.MAX_CAPACITY, parameters.MAX_ELEVATORS);
+                elevatorsEvents.generateElevators(parameters.MAX_CAPACITY);
                 break;    
-            case "startElevator":
-            for (int i = 0; i < parameters.MAX_ELEVATORS; i++) {    
-                elevatorsEvents.startElevator(building.getElevator(i));;
-            }    
-                break;
             case "startRun":
                 elevatorsEvents.startRun();
                 break;    
@@ -63,16 +58,25 @@ public class EventsList {
     }
 
     public void callTimeEvents() {
-        BuildingEvents buildingEvents = new BuildingEvents(building);
-        UserEvents userEvents = new UserEvents(building);
         ElevatorsEvents elevatorsEvents = new ElevatorsEvents(building, building.getElevators());
 
+        this.setEvent("printBuildingState");
+        this.callEvent();
 
-        while(elevatorsEvents.getTimeInHours() < parameters.END_TIME - parameters.START_TIME) {
+        this.setEvent("generateElevators");
+        this.callEvent();
+
+        this.setEvent("startRun");
+        this.callEvent();
+
+        while(elevatorsEvents.getTimeInHours() < elevatorsEvents.getTimes()) {
             if (elevatorsEvents.getTimeInHours() % 2 == 0) {
                 this.setEvent("setUsersBuilding");
                 this.callEvent();
             }
+            
+            this.setEvent("generateNewUserRequests");
+            this.callEvent();
         }
     }
 

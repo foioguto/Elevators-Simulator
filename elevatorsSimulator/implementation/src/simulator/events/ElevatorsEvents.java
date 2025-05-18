@@ -10,19 +10,31 @@ public class ElevatorsEvents {
     private Elevator[] elevators;
     private Building building;
     private int timeInHours = 0;
+    private int times;
 
     public ElevatorsEvents(Building building, Elevator[] elevators) {
         elevatorThreads = new Array<>(100);
         this.building = building;
         this.elevators = elevators;
+        this.times = parameters.END_TIME - parameters.START_TIME;
     }
 
-    public void generateElevators(int maxCapacity, int MAX_ELEVATORS) {
-        this.elevators = new Elevator[MAX_ELEVATORS];
-        for (int i = 0; i < MAX_ELEVATORS; i++) {
-            this.elevators[i] = new Elevator(maxCapacity, i);
+    public void generateElevators(int maxCapacity) {
+        if (building == null) {
+            System.err.println("Error: Building not initialized.");
+            return;
         }
+
+        int numElevators = parameters.MAX_ELEVATORS;
+        this.elevators = new Elevator[numElevators];
+
+        for (int i = 0; i < numElevators; i++) {
+            elevators[i] = new Elevator(maxCapacity, i);
+            elevators[i].setBuilding(building); 
+        }
+
         building.setElevators(elevators);
+        System.out.println("Elevators created: " + numElevators);
     }
 
     public void startElevator(Elevator elevator) {
@@ -42,7 +54,7 @@ public class ElevatorsEvents {
         startElevator(elevator);
 
         while (i < times) {
-            System.out.println("CYCLE #" + timeInHours);
+            System.out.println("Time: " + i + "\n");
 
             userEvents.setUsersBuilding();
             buildingEvents.printBuildingState();
@@ -52,7 +64,7 @@ public class ElevatorsEvents {
                 i++;
                 elevators[0].resetTotalTime();
 
-                System.out.println("END OF CYCLE #" + timeInHours + "\n");
+                System.out.println("Time: " + i + "\n");
             }
 
             try {
@@ -61,21 +73,26 @@ public class ElevatorsEvents {
                 Thread.currentThread().interrupt();
             }
         }
-
-        generateLogs(userEvents.getTotalPeople());
-        System.out.println("Simulation completed.");
     }
 
      public void startRun() {
         for (int i = 0; i < building.getNumElevators(); i++) {
-            simulateElevatorRuns(parameters.END_TIME - parameters.START_TIME, building.getElevator(i));
+            Elevator elevator = building.getElevator(i);
+            if (elevator != null) {
+                simulateElevatorRuns(this.getTimes(), building.getElevator(i));
+            }    
         }
     }
 
     public void stopAllElevators() {
+        UserEvents userEvents = new UserEvents(building);
+
         for (Elevator elevator : elevators) {
             elevator.stopElevatorRun(); 
         }
+        
+        generateLogs(userEvents.getTotalPeople());
+        System.out.println("Simulation completed.");
     }
 
     public void generateLogs(int totalPeople) {
@@ -95,6 +112,10 @@ public class ElevatorsEvents {
 
     public void increaseTimeInHours() {
         timeInHours++;
+    }
+
+    public int getTimes() {
+        return this.times;
     }
 
 } 

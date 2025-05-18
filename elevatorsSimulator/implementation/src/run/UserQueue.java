@@ -19,7 +19,6 @@ public class UserQueue implements Iterable<User> {
         }
     }
 
-
     private UserNode head;
     private UserNode tail;
     private int size;
@@ -31,12 +30,14 @@ public class UserQueue implements Iterable<User> {
     }
 
     public synchronized void append(User user, int priority) {
+        if (user == null) return; 
+
         UserNode newNode = new UserNode(user, priority);
 
         if (head == null) {
             head = newNode;
             tail = newNode;
-        }else {
+        } else {
             UserNode current = head;
 
             while (current != null) {
@@ -63,10 +64,10 @@ public class UserQueue implements Iterable<User> {
             tail.next = newNode;
             newNode.prev = tail;
             tail = newNode;
-            incrementSize();
         }
-    }
 
+        incrementSize();
+    }
 
     public synchronized User removeFirst() {
         if (head == null) {
@@ -86,9 +87,9 @@ public class UserQueue implements Iterable<User> {
         decrementSize();
         return removed;
     }
-    
-      public synchronized User removeLast() {
-        if (head == null) {
+
+    public synchronized User removeLast() {
+        if (tail == null) {
             return null;
         }
 
@@ -107,14 +108,13 @@ public class UserQueue implements Iterable<User> {
     }
 
     public boolean hasWaitingUsers() {
-    for (User user : this) {
-        if (user.isWaiting() == true) {
-            return true;
+        for (User user : this) {
+            if (user != null && user.isWaiting()) {
+                return true;
+            }
         }
+        return false;
     }
-    return false;
-}
-
 
     public boolean isEmpty() {
         return size == 0;
@@ -150,6 +150,7 @@ public class UserQueue implements Iterable<User> {
 
     public void clear() {
         head = null;
+        tail = null;
         size = 0;
     }
 
@@ -174,6 +175,9 @@ public class UserQueue implements Iterable<User> {
 
             @Override
             public boolean hasNext() {
+                while (current != null && current.user == null) {
+                    current = current.next;
+                }
                 return current != null;
             }
 
