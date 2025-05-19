@@ -3,7 +3,8 @@ package simulator.events;
 import run.Building;
 import run.Floor;
 import run.User;
-import run.UserQueue;
+import run.dataStructure.UserQueue;
+
 import java.util.Random;
 import config.Parameters;
 import simulator.EventsList;

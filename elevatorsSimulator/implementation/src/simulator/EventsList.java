@@ -1,8 +1,8 @@
 package simulator;
 
 import run.Building;
+import run.dataStructure.Array;
 import config.Parameters;
-import run.Array;
 import simulator.events.BuildingEvents;
 import simulator.events.ElevatorsEvents;
 import simulator.events.UserEvents;

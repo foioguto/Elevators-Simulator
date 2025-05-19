@@ -1,8 +1,8 @@
 package config.heuristic;
 
 import run.Elevator;
+import run.dataStructure.UserQueue;
 import run.Building;
-import run.UserQueue;
 
 public class SpeedHeuristic implements MovementStyle {
     @Override

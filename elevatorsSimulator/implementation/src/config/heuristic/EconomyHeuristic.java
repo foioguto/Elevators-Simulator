@@ -2,9 +2,9 @@ package config.heuristic;
 
 import run.Elevator;
 import run.Building;
-import run.UserQueue;
-import run.InternalPanel;
 import run.Elevator.ElevatorState;
+import run.dataStructure.UserQueue;
+import run.panels.InternalPanel;
 
 public class EconomyHeuristic implements MovementStyle {
     private InternalPanel intPanel;
@@ -16,45 +16,54 @@ public class EconomyHeuristic implements MovementStyle {
     @Override
     public int decideNextFloor(Elevator elevator, Building building) {
         int currentFloor = elevator.getCurrentFloor();
-        int directionCode = elevator.getState().getDirectionCode();
-
-        if (elevator.getState() == ElevatorState.IDLE) {
-            directionCode = ElevatorState.UP.getDirectionCode();
-        } 
-        if (!hasRequestsInCurrentDirection(building, elevator, directionCode)) {
-            if (hasRequestsInOppositeDirection(building, elevator, directionCode)) {
-                directionCode = -directionCode;
+        ElevatorState currentState = elevator.getState();
+        int direction = currentState.getDirectionCode();
+        
+        // If idle, start moving up by default
+        if (currentState == ElevatorState.IDLE) {
+            direction = ElevatorState.UP.getDirectionCode();
+        }
+        
+        // Check if we should continue in current direction
+        if (!hasRequestsInCurrentDirection(building, elevator, direction)) {
+            // If no requests in current direction, check opposite direction
+            if (hasRequestsInOppositeDirection(building, elevator, direction)) {
+                direction = -direction; // reverse direction
             } else {
-                elevator.stopElevator();
+                return currentFloor; // no requests anywhere, stay put
             }
         }
-
-        int nextFloor = currentFloor += directionCode;
-
-        if (nextFloor == building.getTotalFloors() - 1) {
-            nextFloor = currentFloor --;
+        
+        int nextFloor = currentFloor + direction;
+        
+        // Handle boundary conditions
+        if (nextFloor >= building.getTotalFloors()) {
+            nextFloor = building.getTotalFloors() - 1;
+            direction = -1; // start going down
         } else if (nextFloor < 0) {
-            nextFloor = currentFloor++;
+            nextFloor = 0;
+            direction = 1; // start going up
         }
+        
+        // Update elevator state based on new direction
+        elevator.setState(direction > 0 ? ElevatorState.UP : ElevatorState.DOWN);
         
         return nextFloor;
     }
 
-    private boolean hasRequestsInCurrentDirection(Building building, Elevator elevator, int directionCode) {
+    private boolean hasRequestsInCurrentDirection(Building building, Elevator elevator, int direction) {
         int currentFloor = elevator.getCurrentFloor();
         UserQueue currentUsers = elevator.getCurrentUsers();
 
-        return (directionCode > 0 && (elevator.requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor))) ||
-                (directionCode < 0 && (elevator.requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor)));
+        return (direction > 0 && (elevator.requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor))) ||
+               (direction < 0 && (elevator.requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor)));
     }
 
-    private boolean hasRequestsInOppositeDirection(Building building, Elevator elevator, int directionCode) {
+    private boolean hasRequestsInOppositeDirection(Building building, Elevator elevator, int direction) {
         int currentFloor = elevator.getCurrentFloor();
         UserQueue currentUsers = elevator.getCurrentUsers();
 
-        return (directionCode > 0 && (elevator.requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor))) ||
-                (directionCode < 0 && (elevator.requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor)));
+        return (direction > 0 && (elevator.requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor))) ||
+               (direction < 0 && (elevator.requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor)));
     }
-
 }
-

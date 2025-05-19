@@ -2,7 +2,7 @@ package simulator.events;
 
 import run.Building;
 import run.Elevator;
-import run.Array;
+import run.dataStructure.Array;
 import config.Parameters;
 
 public class ElevatorsEvents {
@@ -46,8 +46,7 @@ public class ElevatorsEvents {
 
     public void simulateElevatorRuns(int times, Elevator elevator) {
         UserEvents userEvents = new UserEvents(building);
-        BuildingEvents buildingEvents = new BuildingEvents(building);
-
+    
         System.out.println("Starting simulation with " + times + " elevator cycles...\n");
 
         int i = timeInHours + Parameters.START_TIME;
@@ -57,7 +56,6 @@ public class ElevatorsEvents {
             System.out.println("Time: " + i + "\n");
 
             userEvents.setUsersBuilding();
-            buildingEvents.printBuildingState();
             
             if (elevators[0].getTotalTime() >= 60) { //just the first elevator counts the time 
                 timeInHours++;

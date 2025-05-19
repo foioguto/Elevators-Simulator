@@ -1,4 +1,4 @@
-package run;
+package run.dataStructure;
 
 public class Array<T> {
     private T[] elements;

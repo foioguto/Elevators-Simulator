@@ -1,11 +1,13 @@
-package run;
+package run.dataStructure;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import run.User;
+
 public class UserQueue implements Iterable<User> {
 
-    static class UserNode {
+    public static class UserNode {
         public User user;
         public UserNode next;
         public UserNode prev;

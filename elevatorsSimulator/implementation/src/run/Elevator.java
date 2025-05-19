@@ -1,6 +1,8 @@
 package run;
 import config.ElevatorController;
 import config.Parameters;
+import run.dataStructure.UserQueue;
+import run.panels.InternalPanel;
 
 public class Elevator implements Runnable{
     private Building building;
