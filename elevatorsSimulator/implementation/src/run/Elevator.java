@@ -133,7 +133,7 @@ public class Elevator implements Runnable{
     }
 
     public boolean requestsAbove(Building building) {
-        for (int i = currentFloor + 1; i < building.getFloors().length; i++) {
+        for (int i = currentFloor + 1; i < building.getTotalFloors(); i++) {
             UserQueue users = building.getFloor(i).getUsers();
             if (users != null && users.hasWaitingUsers()) {
               return true;
