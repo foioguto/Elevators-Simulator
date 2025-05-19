@@ -1,7 +1,7 @@
 package simulator;
 
 import run.Building;
-import config.parameters;
+import config.Parameters;
 import run.Array;
 import simulator.events.BuildingEvents;
 import simulator.events.ElevatorsEvents;
@@ -9,7 +9,7 @@ import simulator.events.UserEvents;
 
 public class EventsList {
     private Array<String> eventsArray;
-    private Building building = new Building(parameters.MAX_FLOORS);
+    private Building building = new Building(Parameters.MAX_FLOORS);
 
 
     public EventsList() {
@@ -41,7 +41,7 @@ public class EventsList {
                 buildingEvents.printBuildingState();    
                 break;
             case "generateElevators":
-                elevatorsEvents.generateElevators(parameters.MAX_CAPACITY);
+                elevatorsEvents.generateElevators(Parameters.MAX_CAPACITY);
                 break;    
             case "startRun":
                 elevatorsEvents.startRun();

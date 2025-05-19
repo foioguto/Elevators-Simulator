@@ -3,7 +3,7 @@ package simulator.events;
 import run.Building;
 import run.Elevator;
 import run.Array;
-import config.parameters;
+import config.Parameters;
 
 public class ElevatorsEvents {
     private Array<Thread> elevatorThreads;
@@ -16,7 +16,7 @@ public class ElevatorsEvents {
         elevatorThreads = new Array<>(100);
         this.building = building;
         this.elevators = elevators;
-        this.times = parameters.END_TIME - parameters.START_TIME;
+        this.times = Parameters.END_TIME - Parameters.START_TIME;
     }
 
     public void generateElevators(int maxCapacity) {
@@ -25,7 +25,7 @@ public class ElevatorsEvents {
             return;
         }
 
-        int numElevators = parameters.MAX_ELEVATORS;
+        int numElevators = Parameters.MAX_ELEVATORS;
         this.elevators = new Elevator[numElevators];
 
         for (int i = 0; i < numElevators; i++) {
@@ -50,7 +50,7 @@ public class ElevatorsEvents {
 
         System.out.println("Starting simulation with " + times + " elevator cycles...\n");
 
-        int i = timeInHours + parameters.START_TIME;
+        int i = timeInHours + Parameters.START_TIME;
         startElevator(elevator);
 
         while (i < times) {
@@ -66,13 +66,8 @@ public class ElevatorsEvents {
 
                 System.out.println("Time: " + i + "\n");
             }
-
-            try {
-                Thread.sleep(1000); // 1 second
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+            
+         }
     }
 
      public void startRun() {
@@ -103,7 +98,7 @@ public class ElevatorsEvents {
         }
         System.out.println("Total users transported: " + totalPeople);
         System.out.println("Total energy spent: " + total);
-        System.out.println("Total cost: " + (total * parameters.COST_PER_KWH));
+        System.out.println("Total cost: " + (total * Parameters.COST_PER_KWH));
     }
 
     public int getTimeInHours() {

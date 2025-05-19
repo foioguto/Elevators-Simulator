@@ -5,7 +5,7 @@ import run.Floor;
 import run.User;
 import run.UserQueue;
 import java.util.Random;
-import config.parameters;
+import config.Parameters;
 import simulator.EventsList;
 
 public class UserEvents {
@@ -36,11 +36,12 @@ public class UserEvents {
                 } while (nextFloor == currentFloor);
 
                 boolean up = nextFloor > currentFloor;
-                int setPrio = random.nextInt(parameters.PRIORITY_RARITY);
-                int priority = setPrio < parameters.PRIORITY_RARITY ? 2 : 1;
+                int setPrio = random.nextInt(Parameters.PRIORITY_RARITY);
+                int priority = setPrio < Parameters.PRIORITY_RARITY ? 2 : 1;
                 boolean isWaiting = true;
+                int wait_time = priority == 1 ? Parameters.QUEUE_TIME / 2 : Parameters.QUEUE_TIME;
 
-                User user = new User(currentFloor, nextFloor, up, priority, isWaiting);
+                User user = new User(currentFloor, nextFloor, up, priority, isWaiting, wait_time);
                 userQueue.append(user, priority);
             }
 
