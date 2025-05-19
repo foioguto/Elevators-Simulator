@@ -15,6 +15,7 @@ public class ElevatorsEvents {
     private Building building;
     private int timeInHours = 0;
     private final int times;
+    private volatile boolean timePrinted = false;
 
     /**
      * Constructs an ElevatorsEvents instance with the specified building and elevators.
@@ -94,23 +95,46 @@ public class ElevatorsEvents {
      * @param times number of simulation cycles to run
      * @param elevator the elevator to simulate
      */
-    public void simulateElevatorRuns(int times, Elevator elevator) {
+    public synchronized void simulateElevatorRuns(int times, Elevator elevator) {
+        if (elevator == null) {
+            throw new IllegalArgumentException("Elevator cannot be null");
+        }
+
         UserEvents userEvents = new UserEvents(building);
-    
-        System.out.println("Starting simulation with " + times + " elevator cycles...\n");
+
+        // Only print simulation start message for elevator 0
+        if (elevator.getElevatorNumber() == 0) {
+            System.out.println("\nStarting simulation with " + times + " elevator cycles...\n");
+        }
 
         int i = timeInHours + Parameters.START_TIME;
         startElevator(elevator);
 
         while (i < times) {
-            System.out.println("Time: " + i + "\n");
+            // Only print time for elevator 0 to avoid duplicate messages
+            if (!timePrinted && elevator.getElevatorNumber() == 0) {
+                System.out.println("Time: " + i + "\n");
+                timePrinted = true;
+            }
+
             userEvents.setUsersBuilding();
             
+            // Time tracking only handled by elevator 0
             if (elevators.get(0).getTotalTime() >= 60) {
-                timeInHours++;
-                i++;
-                elevators.get(0).resetTotalTime();
-                System.out.println("Time: " + i + "\n");
+                if (elevator.getElevatorNumber() == 0) {
+                    timeInHours++;
+                    i++;
+                    elevators.get(0).resetTotalTime();
+                    timePrinted = false;
+                }
+            }
+
+            try {
+                Thread.sleep(1000); // Simulate 1 second of operation
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Simulation interrupted for elevator " + elevator.getElevatorNumber());
+                break;
             }
         }
     }

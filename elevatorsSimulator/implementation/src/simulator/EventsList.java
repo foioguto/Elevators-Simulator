@@ -92,6 +92,9 @@ public class EventsList {
     public void callTimeEvents() {
         ElevatorsEvents elevatorsEvents = new ElevatorsEvents(building, building.getElevators());
   
+        this.setEvent("setUsersBuilding");
+        this.callEvent();
+
         this.setEvent("printBuildingState");
         this.callEvent();
 
