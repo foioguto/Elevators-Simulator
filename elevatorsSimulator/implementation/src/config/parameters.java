@@ -11,13 +11,17 @@ public class parameters {
 
     public static final int ENERGY_CONSUMPTION = 1; // Energy consumed for handle doors and move between floors
 
-    public static final double TIME = 1; // Time taken per operation (in minutes)
+    public static final double TIME = 5; // Time taken per operation (in minutes)
 
-    public static final int START_TIME = 6; // Start time of the simulation (in hours)
+    public static final int START_TIME = 8; // Start time of the simulation (in hours)
 
-    public static final int END_TIME = 7; // End time of the simulation (in hours)
+    public static final int END_TIME = 18; // End time of the simulation (in hours)
+
+    public static final int PEAK_HOUR1 = 12; // Entrance peak hour
+
+     public static final int PEAK_HOUR2 = 17; // exit peak hour
 
     public static final double COST_PER_KWH = 0.3; // Cost per kWh (in california, USA, it's around $0.30 per kWh)
 
-    public static final int DELAY = 1500; // Miliseconds
+    public static final int DELAY = 1000; // Miliseconds
 }

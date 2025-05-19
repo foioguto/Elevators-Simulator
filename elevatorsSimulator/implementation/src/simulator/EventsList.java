@@ -74,6 +74,16 @@ public class EventsList {
                 this.setEvent("setUsersBuilding");
                 this.callEvent();
             }
+            if (elevatorsEvents.getTimeInHours() == parameters.PEAK_HOUR1 || elevatorsEvents.getTimeInHours() == parameters.PEAK_HOUR2) {
+                this.setEvent("setUsersBuilding");
+                this.callEvent();
+
+                this.setEvent("generateNewUserRequests");
+                this.callEvent();
+                
+                this.setEvent("setUsersBuilding");
+                this.callEvent();
+            }
             
             this.setEvent("generateNewUserRequests");
             this.callEvent();

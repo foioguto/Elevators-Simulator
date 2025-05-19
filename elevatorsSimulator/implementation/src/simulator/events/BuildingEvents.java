@@ -1,5 +1,6 @@
 package simulator.events;
 
+import java.util.Scanner;
 import run.Building;
 import run.Floor;
 import run.User;
@@ -7,9 +8,12 @@ import run.UserQueue;
 
 public class BuildingEvents {
     private Building building;
+    private Scanner scanner;
 
     public BuildingEvents(Building building) {
         this.building = building;
+        this.scanner = new Scanner(System.in);
+        this.setScanner(scanner);
     }
 
       public void startBuildingManual(int MAX_FLOORS) {
@@ -35,5 +39,12 @@ public class BuildingEvents {
         }
 
         System.out.println("==================================\n");
+        System.out.println("Press any key to continue...");
+        scanner.next();
     }
+
+    public void setScanner(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
 }
