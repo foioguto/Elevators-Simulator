@@ -1,5 +1,8 @@
 package run;
 
+import run.dataStructure.UserQueue;
+import run.panels.ExternalPanel;
+
 public class Floor {
     private int floor;
     private UserQueue users;

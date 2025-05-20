@@ -1,4 +1,9 @@
-package run;
+package run.panels;
+
+import run.Building;
+import run.Elevator;
+import run.Floor;
+import run.User;
 
 public class ExternalPanel {
     public ExternalPanel() {

@@ -1,5 +1,8 @@
 package run;
-import config.parameters;
+import config.ElevatorController;
+import config.Parameters;
+import run.dataStructure.UserQueue;
+import run.panels.InternalPanel;
 
 public class Elevator implements Runnable{
     private Building building;
@@ -11,6 +14,7 @@ public class Elevator implements Runnable{
     private int elevatorNumber;
     private int totalEnergy;
     private int totalTime;
+    private ElevatorController elevatorController;
     private volatile boolean running = true; // controls the loop thread
 
 
@@ -39,53 +43,46 @@ public class Elevator implements Runnable{
         this.totalEnergy = 0;
         this.totalTime = 0;
         this.elevatorNumber = elevatorNumber;
+        this.setElevatorController(ElevatorController.chooseHeuristic());
     }
 
     public void move(Building building) {
         long startTime = System.nanoTime();
 
-        int directionCode = (state == ElevatorState.IDLE) ? ElevatorState.UP.getDirectionCode() : state.getDirectionCode();
-        state = (directionCode > 0) ? ElevatorState.UP : ElevatorState.DOWN;
-
-        while (isWithinBounds(building)) {
+        while (running) {
             logElevatorStatus("Before");
-
             Floor floor = building.getFloor(currentFloor);
-            Elevator elevator = building.getElevator(elevatorNumber);
-            boolean wantsToEnter = floor.getExtPanel().wantsToEnterHere(floor, building, elevator);
+            boolean wantsToEnter = floor.getExtPanel().wantsToEnterHere(floor, building, this);
             boolean wantsToExit = intPanel.wantsToExitHere(currentUsers, currentFloor);
 
+            int nextFloor = elevatorController.decideNextFloor(this, building);
+            if (nextFloor == currentFloor) {
+                stopElevator();
+                break;
+            }
+
+            int direction = Integer.compare(nextFloor, currentFloor);
+            this.state = direction > 0 ? ElevatorState.UP : ElevatorState.DOWN;
+
+            while (currentFloor != nextFloor) {
+                simulateTravelBetweenFloors();
+                currentFloor += direction;
+            }
+            
             if (wantsToEnter || wantsToExit) {
                 simulateDoorOperation();
+
                 handleDoorsAtCurrentFloor(currentUsers, floor);
                 simulatePassengerExchange();
+
                 simulateDoorOperation();
-            }
-
-            logElevatorStatus("After");
-
-            if (!hasRequestsInCurrentDirection(building, directionCode)) {
-                if (hasRequestsInOppositeDirection(building, directionCode)) {
-                    directionCode = -directionCode;
-                    state = (directionCode > 0) ? ElevatorState.UP : ElevatorState.DOWN;
-                    continue;
-                } else {
-                    stopElevator();
-                    break;
-                }
-            }
-
-            simulateTravelBetweenFloors();
-            currentFloor += directionCode;
+                logElevatorStatus("After");
+            }    
         }
 
         long endTime = System.nanoTime();
         double durationInSeconds = (endTime - startTime) / 1_000_000_000.0;
         System.out.printf("\n=== Total Travel Time: %.3f seconds ===%n", durationInSeconds);
-    }
-
-    private boolean isWithinBounds(Building building) {
-        return currentFloor >= 0 && currentFloor < building.getTotalFloors();
     }
 
     private void logElevatorStatus(String phase) {
@@ -117,17 +114,7 @@ public class Elevator implements Runnable{
         }
     }
 
-    private boolean hasRequestsInCurrentDirection(Building building, int directionCode) {
-        return (directionCode > 0 && (requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor))) ||
-                (directionCode < 0 && (requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor)));
-    }
-
-    private boolean hasRequestsInOppositeDirection(Building building, int directionCode) {
-        return (directionCode > 0 && (requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor))) ||
-                (directionCode < 0 && (requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor)));
-    }
-
-    private void stopElevator() {
+    public void stopElevator() {
         state = ElevatorState.IDLE;
     }
 
@@ -146,7 +133,7 @@ public class Elevator implements Runnable{
     }
 
     public boolean requestsAbove(Building building) {
-        for (int i = currentFloor + 1; i < building.getFloors().length; i++) {
+        for (int i = currentFloor + 1; i < building.getTotalFloors(); i++) {
             UserQueue users = building.getFloor(i).getUsers();
             if (users != null && users.hasWaitingUsers()) {
               return true;
@@ -167,7 +154,7 @@ public class Elevator implements Runnable{
 
     private void simulateDoorOperation() {
         try {
-            Thread.sleep(parameters.DELAY);
+            Thread.sleep(Parameters.DELAY);
 
             increaseEnergy();
             increaseTime();
@@ -178,7 +165,7 @@ public class Elevator implements Runnable{
 
     private void simulatePassengerExchange() {
         try {
-            Thread.sleep(parameters.DELAY);
+            Thread.sleep(Parameters.DELAY);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -186,7 +173,7 @@ public class Elevator implements Runnable{
 
     private void simulateTravelBetweenFloors() {
         try {
-            Thread.sleep(parameters.DELAY);
+            Thread.sleep(Parameters.DELAY);
 
             increaseEnergy();
             increaseTime();
@@ -195,11 +182,11 @@ public class Elevator implements Runnable{
         }
     }
     public int increaseTime() {
-        return totalTime += parameters.TIME;
+        return totalTime += Parameters.TIME;
     }
 
     public synchronized int increaseEnergy() {
-        return totalEnergy += parameters.ENERGY_CONSUMPTION;
+        return totalEnergy += Parameters.ENERGY_CONSUMPTION;
     }
 
     // Getters and Setters
@@ -255,8 +242,12 @@ public class Elevator implements Runnable{
     }
 
     public void stopElevatorRun() {
-    this.running = false;
-}
+        this.running = false;
+    }
+
+    public void setElevatorController(ElevatorController elevatorController) {
+        this.elevatorController = elevatorController;
+    }
 
     @Override
     public void run() {

@@ -1,6 +1,6 @@
 package config;
 
-public class parameters {
+public class Parameters {
     public static final int MAX_FLOORS = 12; // Maximum number of floors
 
     public static final int MAX_ELEVATORS = 3; // Maximum number of elevators
@@ -21,7 +21,12 @@ public class parameters {
 
      public static final int PEAK_HOUR2 = 17; // exit peak hour
 
-    public static final double COST_PER_KWH = 0.3; // Cost per kWh (in california, USA, it's around $0.30 per kWh)
+    public static final double COST_PER_KWH = 0.3; // Cost per kWh (in California, USA, it's around $0.30 per kWh)
 
-    public static final int DELAY = 1000; // Miliseconds
+    public static final int DELAY = 1000; // Milliseconds
+
+    public static final String HEURISTIC = "speed"; // "economy" or "speed" 
+
+    public static final int QUEUE_TIME = 30; // in seconds(must be even number), priority users have half of this time
+
 }

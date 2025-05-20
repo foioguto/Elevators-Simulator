@@ -4,7 +4,7 @@ import java.util.Scanner;
 import run.Building;
 import run.Floor;
 import run.User;
-import run.UserQueue;
+import run.dataStructure.UserQueue;
 
 public class BuildingEvents {
     private Building building;

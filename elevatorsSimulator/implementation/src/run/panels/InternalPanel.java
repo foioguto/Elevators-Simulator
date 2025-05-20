@@ -1,4 +1,6 @@
-package run;
+package run.panels;
+
+import run.dataStructure.UserQueue;
 
 /**
  * InternalPanel is responsible for handling internal elevator requests
