@@ -11,7 +11,7 @@ public class Parameters {
 
     public static final int ENERGY_CONSUMPTION = 1; // Energy consumed for handle doors and move between floors
 
-    public static final double TIME = 10; // Time taken per operation (in minutes)
+    public static final double TIME = 12; // Time taken per operation (in minutes)
 
     public static final int START_TIME = 8; // Start time of the simulation (in hours)
 
@@ -21,7 +21,7 @@ public class Parameters {
 
     public static final int DELAY = 1000; // Milliseconds
 
-    public static final String HEURISTIC = "economy"; // "economy" or "speed" 
+    public static final String HEURISTIC = "speed"; // "economy" or "speed" 
 
     public static final int QUEUE_TIME = 30; // in seconds(must be even number), priority users have half of this time
 

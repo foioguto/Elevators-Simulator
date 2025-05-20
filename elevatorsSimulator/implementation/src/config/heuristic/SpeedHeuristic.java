@@ -30,6 +30,7 @@ public class SpeedHeuristic implements MovementStyle {
                 }
             }
         }
+        
         return currentFloor;
     }
     

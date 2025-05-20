@@ -104,7 +104,7 @@ public class ElevatorsEvents {
 
         // Only print simulation start message for elevator 0
         if (elevator.getElevatorNumber() == 0) {
-            System.out.println("\nStarting simulation with " + times + " elevator cycles...\n");
+            System.out.println("\nStarting simulation at " + Parameters.START_TIME + " hours...\n");
         }
 
         int i = timeInHours + Parameters.START_TIME;
@@ -119,15 +119,16 @@ public class ElevatorsEvents {
 
             userEvents.setUsersBuilding();
             
-            // Time tracking only handled by elevator 0
-            if (elevators.get(0).getTotalTime() >= 60) {
-                if (elevator.getElevatorNumber() == 0) {
-                    timeInHours++;
-                    i++;
-                    elevators.get(0).resetTotalTime();
-                    timePrinted = false;
+            for (int j = 0; j < elevators.size(); j++) {
+                if (elevators.get(j).getTotalTime() >= 60) {
+                    if (elevator.getElevatorNumber() == 0) {
+                        timeInHours++;
+                        i++;
+                        elevators.get(j).resetTotalTime();
+                        timePrinted = false;
+                    }
                 }
-            }
+            }    
 
             try {
                 Thread.sleep(1000); // Simulate 1 second of operation
