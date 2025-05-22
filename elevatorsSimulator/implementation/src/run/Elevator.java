@@ -1,24 +1,14 @@
 package run;
-import config.ElevatorController;
-import config.Parameters;
-import run.dataStructure.Array;
-import run.dataStructure.UserQueue;
-import run.panels.InternalPanel;
 
-public class Elevator implements Runnable{
-    private Building building;
+import java.util.Random;
+
+public class Elevator {
     private final int maxCapacity;
     private final InternalPanel intPanel;
+    private final ExternalPanel extPanel;
     private ElevatorState state;
     private UserQueue currentUsers;
     private int currentFloor;
-    private int elevatorNumber;
-    private int totalEnergy;
-    private int totalTime;
-    private ElevatorController elevatorController;
-    private volatile boolean running = true; // controls the loop thread
-    private Array<ElevatorListener> listeners;
-
 
     public enum ElevatorState {
         IDLE(0),
@@ -36,51 +26,57 @@ public class Elevator implements Runnable{
         }
     }
 
-    public Elevator(int maxCapacity, int elevatorNumber) {
+    public Elevator(int maxCapacity) {
         this.currentFloor = 0;
         this.state = ElevatorState.IDLE;
         this.maxCapacity = maxCapacity;
         this.currentUsers = new UserQueue();
         this.intPanel = new InternalPanel();
-        this.totalEnergy = 0;
-        this.totalTime = 0;
-        this.elevatorNumber = elevatorNumber;
-        this.setElevatorController(ElevatorController.chooseHeuristic());
-        listeners = new Array<>(100);
+        this.extPanel = new ExternalPanel();
     }
 
-    public void move(Building building) {
+    public void move(Building building, Simulator simulator) {
         long startTime = System.nanoTime();
 
-        while (running) {
+        int directionCode = (state == ElevatorState.IDLE) ? ElevatorState.UP.getDirectionCode() : state.getDirectionCode();
+        state = (directionCode > 0) ? ElevatorState.UP : ElevatorState.DOWN;
+
+        while (isWithinBounds(building)) {
+            for (int i = 0; i < 50; ++i) System.out.println();
+            simulator.printBuildingState(building);
+
             logElevatorStatus("Before");
+
             Floor floor = building.getFloor(currentFloor);
-            boolean wantsToEnter = floor.getExtPanel().wantsToEnterHere(floor, building, this);
+            boolean wantsToEnter = floor.getExtPanel().wantsToEnterHere(floor, building, building.getElevator());
             boolean wantsToExit = intPanel.wantsToExitHere(currentUsers, currentFloor);
 
-            int nextFloor = elevatorController.decideNextFloor(this, building);
-            if (nextFloor == currentFloor) {
-                stopElevator();
-                break;
-            }
-
-            int direction = Integer.compare(nextFloor, currentFloor);
-            this.state = direction > 0 ? ElevatorState.UP : ElevatorState.DOWN;
-
-            while (currentFloor != nextFloor) {
-                simulateTravelBetweenFloors();
-                currentFloor += direction;
-            }
-            
             if (wantsToEnter || wantsToExit) {
                 simulateDoorOperation();
-
                 handleDoorsAtCurrentFloor(currentUsers, floor);
                 simulatePassengerExchange();
-
                 simulateDoorOperation();
-                logElevatorStatus("After");
-            }    
+            }
+
+            logElevatorStatus("After");
+
+            if (new Random().nextDouble() < 0.2) {
+                simulator.setUsersBuildingAlternate();
+            }
+
+            if (!hasRequestsInCurrentDirection(building, directionCode)) {
+                if (hasRequestsInOppositeDirection(building, directionCode)) {
+                    directionCode = -directionCode;
+                    state = (directionCode > 0) ? ElevatorState.UP : ElevatorState.DOWN;
+                    continue;
+                } else {
+                    stopElevator();
+                    break;
+                }
+            }
+
+            simulateTravelBetweenFloors();
+            currentFloor += directionCode;
         }
 
         long endTime = System.nanoTime();
@@ -88,13 +84,17 @@ public class Elevator implements Runnable{
         System.out.printf("\n=== Total Travel Time: %.3f seconds ===%n", durationInSeconds);
     }
 
+    private boolean isWithinBounds(Building building) {
+        return currentFloor >= 0 && currentFloor < building.getTotalFloors();
+    }
+
     private void logElevatorStatus(String phase) {
         if (phase.equals("Before")) {
             System.out.println("\n================== Elevator Status ==================");
         }
 
-        System.out.printf("%s |Elevator: %d | Floor: %d | Passengers: %d | State: %s%n",
-                phase, elevatorNumber, currentFloor, currentUsers.getSize(), state);
+        System.out.printf("%s | Floor: %d | Passengers: %d | State: %s%n",
+                phase, currentFloor, currentUsers.getSize(), state);
 
         StringBuilder inside = new StringBuilder();
         for (User user : currentUsers) {
@@ -117,29 +117,39 @@ public class Elevator implements Runnable{
         }
     }
 
-    public void stopElevator() {
+    private boolean hasRequestsInCurrentDirection(Building building, int directionCode) {
+        return (directionCode > 0 && (requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor))) ||
+                (directionCode < 0 && (requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor)));
+    }
+
+    private boolean hasRequestsInOppositeDirection(Building building, int directionCode) {
+        return (directionCode > 0 && (requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor))) ||
+                (directionCode < 0 && (requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor)));
+    }
+
+    private void stopElevator() {
         state = ElevatorState.IDLE;
     }
 
     public void handleDoorsAtCurrentFloor(UserQueue currentUsers, Floor floor) {
-        intPanel.exitElevator(currentUsers, this.currentFloor);
+        intPanel.detectExitRequests(currentUsers, this.currentFloor);
         boardPassengers(floor);
     }
 
     private void boardPassengers(Floor floor) {
         UserQueue floorQueue = floor.getUsers();
         while (!floorQueue.isEmpty() && currentUsers.getSize() < maxCapacity) {
-            User user = floorQueue.removeFirst();
-            user.setWaiting(false); // Crie isso na classe User
-            currentUsers.append(user, floorQueue.getPriority());
+            currentUsers.append(floorQueue.removeFirst());
         }
     }
 
     public boolean requestsAbove(Building building) {
-        for (int i = currentFloor + 1; i < building.getTotalFloors(); i++) {
+        for (int i = currentFloor + 1; i < building.getFloors().length; i++) {
             UserQueue users = building.getFloor(i).getUsers();
-            if (users != null && users.hasWaitingUsers()) {
-              return true;
+            if (users != null) {
+                for (User user : users) {
+                    if (user != null) return true;
+                }
             }
         }
         return false;
@@ -148,30 +158,18 @@ public class Elevator implements Runnable{
     public boolean requestsBelow(Building building) {
         for (int i = 0; i < currentFloor; i++) {
             UserQueue users = building.getFloor(i).getUsers();
-            if (users != null && users.hasWaitingUsers()) {
-               return true;
+            if (users != null) {
+                for (User user : users) {
+                    if (user != null && !user.isUp()) return true;
+                }
             }
         }
         return false;
     }
 
-    public void addListener(ElevatorListener listener) {
-        listeners.append(listener);
-    }
-
-    private void notifyListeners() {
-        for (int i = 0;i<listeners.size();i++) {
-            listeners.get(i).onElevatorMoved(elevatorNumber, currentFloor, state);
-            listeners.get(i).onUsersChanged(elevatorNumber, currentUsers, currentFloor);
-        }
-    }
-
     private void simulateDoorOperation() {
         try {
-            Thread.sleep(Parameters.DELAY);
-
-            increaseEnergy();
-            increaseTime();
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -179,7 +177,7 @@ public class Elevator implements Runnable{
 
     private void simulatePassengerExchange() {
         try {
-            Thread.sleep(Parameters.DELAY);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -187,20 +185,10 @@ public class Elevator implements Runnable{
 
     private void simulateTravelBetweenFloors() {
         try {
-            Thread.sleep(Parameters.DELAY);
-
-            increaseEnergy();
-            increaseTime();
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-    }
-    public int increaseTime() {
-        return totalTime += Parameters.TIME;
-    }
-
-    public synchronized int increaseEnergy() {
-        return totalEnergy += Parameters.ENERGY_CONSUMPTION;
     }
 
     // Getters and Setters
@@ -232,42 +220,5 @@ public class Elevator implements Runnable{
     public int getMaxCapacity() {
         return maxCapacity;
     }
-    
-    public InternalPanel getIntPanel() {
-        return intPanel;
-    }
-    public int getTotalEnergy() {
-        return totalEnergy;
-    }   
-    public int getTotalTime() {
-        return totalTime;
-    }
 
-    public void resetTotalTime() {
-        this.totalTime = 0;
-    }
-
-    public int getElevatorNumber() {
-        return this.elevatorNumber;
-    }
-
-    public void setBuilding(Building building) {
-        this.building = building;
-    }
-
-    public void stopElevatorRun() {
-        this.running = false;
-    }
-
-    public void setElevatorController(ElevatorController elevatorController) {
-        this.elevatorController = elevatorController;
-    }
-
-    @Override
-    public void run() {
-        while (running) {
-            move(this.building);
-            notifyListeners();
-        }
-    }
 }

@@ -1,8 +1,5 @@
 package run;
 
-import run.dataStructure.UserQueue;
-import run.panels.ExternalPanel;
-
 public class Floor {
     private int floor;
     private UserQueue users;
@@ -19,12 +16,12 @@ public class Floor {
     }
 
     public void bringElevatorToFloor(User user) {
-        users.append(user, user.getPriority());
+        users.append(user);
     }
 
     public void goToElevator(Elevator elevator) {
         while (!users.isEmpty()) {
-            elevator.getCurrentUsers().append(users.removeFirst(), users.getPriority());
+            elevator.getCurrentUsers().append(users.removeFirst());
         }
     }
 
@@ -42,10 +39,6 @@ public class Floor {
 
     public ExternalPanel getExtPanel() {
         return extPanel;
-    }
-
-    public int getUserCount() {
-        return users.getSize();
     }
 
 }

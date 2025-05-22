@@ -3,17 +3,12 @@
  */
 package run;
 
-import config.Usernames;
 
 public class User {
     private int currentFloor;
     private int nextFloor;
     private boolean up;
-    private int priority;
-    private boolean waiting;
-    private int waitTime;
-    private Usernames usernames;
-    private String username;
+    private boolean priority;
 
     /**
      * Creates a new User with the specified floor information and direction.
@@ -21,15 +16,11 @@ public class User {
      * @param nextFloor The floor where the user wants to go
      * @param up true if the user wants to go up, false if going down
      */
-    public User(int currentFloor, int nextFloor, boolean up, int priority, boolean waiting, int time) {
+    public User(int currentFloor, int nextFloor, boolean up, boolean priority) {
         this.currentFloor = currentFloor;
         this.nextFloor = nextFloor;
         this.up = up;
         this.priority = priority;
-        this.waiting = waiting;
-        this.setWaitTime(time);
-        usernames = new Usernames();
-        this.username = usernames.selectRandom();
     }
 
     /**
@@ -78,34 +69,6 @@ public class User {
      */
     public void setUp(boolean up) {
         this.up = up;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public boolean isWaiting() {
-        return waiting;    
-    }
-
-    public void setWaiting(boolean waiting) {
-        this.waiting = waiting;
-    }
-
-    public void setWaitTime(int time) {
-        this.waitTime = time;
-    }
-
-    public int getWaitTime() {
-        return this.waitTime;
-    }
-
-    public String getUsername() {
-        return this.username;
     }
 
 }
