@@ -60,10 +60,6 @@ public class Elevator {
 
             logElevatorStatus("After");
 
-            if (new Random().nextDouble() < 0.2) {
-                simulator.setUsersBuildingAlternate();
-            }
-
             if (!hasRequestsInCurrentDirection(building, directionCode)) {
                 if (hasRequestsInOppositeDirection(building, directionCode)) {
                     directionCode = -directionCode;
@@ -73,6 +69,10 @@ public class Elevator {
                     stopElevator();
                     break;
                 }
+            }
+
+            if (new Random().nextDouble() < 0.2) {
+                simulator.setUsersBuildingAlternate();
             }
 
             simulateTravelBetweenFloors();
@@ -144,12 +144,10 @@ public class Elevator {
     }
 
     public boolean requestsAbove(Building building) {
-        for (int i = currentFloor + 1; i < building.getFloors().length; i++) {
+        for (int i = currentFloor + 1; i < building.getTotalFloors(); i++) {
             UserQueue users = building.getFloor(i).getUsers();
-            if (users != null) {
-                for (User user : users) {
-                    if (user != null) return true;
-                }
+            if (users != null && !users.isEmpty()) {
+                return true;
             }
         }
         return false;
