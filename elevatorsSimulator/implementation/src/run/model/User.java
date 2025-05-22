@@ -1,20 +1,19 @@
-/**
- * This package contains data structures for managing elevator simulations.
- */
 package run.model;
 
-
+/**
+ * Represents a user (passenger) in the elevator simulation system
+ */
 public class User {
+    // Class fields
     private int currentFloor;
     private int nextFloor;
     private boolean up;
     private boolean priority;
 
+    // ==================== Constructor ====================
+
     /**
-     * Creates a new User with the specified floor information and direction.
-     * @param currentFloor The floor where the user is currently located
-     * @param nextFloor The floor where the user wants to go
-     * @param up true if the user wants to go up, false if going down
+     * Creates a new user with specified floor positions and direction
      */
     public User(int currentFloor, int nextFloor, boolean up, boolean priority) {
         this.currentFloor = currentFloor;
@@ -23,52 +22,65 @@ public class User {
         this.priority = priority;
     }
 
+    // ==================== Floor Position Accessors ====================
+
     /**
-     * Gets the user's current floor.
-     * @return The current floor number
+     * Gets the user's current floor position
      */
     public int getCurrentFloor() {
         return currentFloor;
     }
 
     /**
-     * Sets the user's current floor.
-     * @param currentFloor The new current floor number
+     * Updates the user's current floor position
      */
     public void setCurrentFloor(int currentFloor) {
         this.currentFloor = currentFloor;
     }
 
     /**
-     * Gets the user's destination floor.
-     * @return The destination floor number
+     * Gets the user's destination floor
      */
     public int getNextFloor() {
         return nextFloor;
     }
 
     /**
-     * Sets the user's destination floor.
-     * @param nextFloor The new destination floor number
+     * Updates the user's destination floor
      */
     public void setNextFloor(int nextFloor) {
         this.nextFloor = nextFloor;
     }
 
+    // ==================== Direction Accessors ====================
+
     /**
-     * Checks if the user wants to go up.
-     * @return true if the user wants to go up, false if going down
+     * Checks if user is going upward
      */
     public boolean isUp() {
         return up;
     }
 
     /**
-     * Sets the user's direction.
-     * @param up true if the user wants to go up, false if going down
+     * Sets the user's travel direction
      */
     public void setUp(boolean up) {
         this.up = up;
     }
 
+    // ==================== Priority Accessors ====================
+
+    /**
+     * Checks if user has priority status
+     */
+    public boolean isPriority() {
+        return priority;
+    }
+
+    /**
+     * Sets the user's priority status
+     */
+    public void setPriority(boolean priority) {
+        this.priority = priority;
+    }
 }

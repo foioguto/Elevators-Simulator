@@ -1,38 +1,30 @@
 package run.simulator;
 
 import run.model.*;
-
 import java.util.Random;
 
-/**
- * Controls the simulation of the elevator system in a building.
- * Handles random or manual initialization, user generation and elevator cycles.
- */
 public class Simulator {
     private final Random random = new Random();
     private Building building;
     private Elevator elevator;
 
-    /**
-     * Initializes the building with a random number of floors (between 2 and 4).
-     */
+    // ==================== Initialization Methods ====================
     public void startBuildingRandom() {
-        int floorsNumber = 5 + random.nextInt(5); // 2 to 4 floors
+        int floorsNumber = 5 + random.nextInt(5);
         this.building = new Building(floorsNumber);
         System.out.println("Building: " + floorsNumber);
     }
 
-    /**
-     * Initializes the building with a specified number of floors.
-     * @param floorsNumber the number of floors to create
-     */
     public void startBuildingManual(int floorsNumber) {
         this.building = new Building(floorsNumber);
     }
 
-    /**
-     * Populates each floor with a random number of users (up to 3).
-     */
+    public void setElevators(int maxCapacity) {
+        this.elevator = new Elevator(maxCapacity);
+        building.setElevator(elevator);
+    }
+
+    // ==================== User Generation Methods ====================
     public void setUsersBuilding() {
         Random random = new Random();
         int totalFloors = building.getTotalFloors();
@@ -123,32 +115,15 @@ public class Simulator {
         }
     }
 
-    /**
-     * Initializes the elevator and sets it in the building.
-     */
-    public void setElevators(int maxCapacity) {
-        this.elevator = new Elevator(maxCapacity); // max capacity = 8
-        building.setElevator(elevator);
+    public void generateNewUserRequests() {
+        // Empty implementation
     }
 
-    /**
-     * Starts the elevator simulation by moving it upward.
-     */
+    // ==================== Simulation Control Methods ====================
     public void startElevator() {
         elevator.move(building, this);
     }
 
-    /**
-     * Adds new random user requests on each floor, without removing existing users.
-     */
-    public void generateNewUserRequests() {
-
-    }
-
-    /**
-     * Runs multiple cycles of elevator movement and user generation.
-     * @param times Number of elevator cycles to simulate
-     */
     public void simulateElevatorRuns(int times) {
         System.out.println("Starting simulation with " + times + " elevator cycles...\n");
 
@@ -185,6 +160,7 @@ public class Simulator {
         System.out.println("Simulation completed.");
     }
 
+    // ==================== Display Methods ====================
     public void printBuildingState(Building building) {
         System.out.println("===== Building State =====");
 
@@ -205,5 +181,4 @@ public class Simulator {
 
         System.out.println("==========================\n");
     }
-
 }

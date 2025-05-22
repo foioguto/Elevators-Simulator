@@ -7,15 +7,7 @@ import run.simulator.Simulator;
 import java.util.Random;
 
 public class Elevator {
-    private final int maxCapacity;
-    private final InternalPanel intPanel;
-    private final ExternalPanel extPanel;
-    private ElevatorState state;
-    private UserQueue currentUsers;
-    private int currentFloor;
-    private double energyUsed = 0.0;
-    double simulatedTime = 0.0;
-
+    // Enum for elevator states
     public enum ElevatorState {
         IDLE(0),
         UP(1),
@@ -32,6 +24,17 @@ public class Elevator {
         }
     }
 
+    // Class fields
+    private final int maxCapacity;
+    private final InternalPanel intPanel;
+    private final ExternalPanel extPanel;
+    private ElevatorState state;
+    private UserQueue currentUsers;
+    private int currentFloor;
+    private double energyUsed = 0.0;
+    double simulatedTime = 0.0;
+
+    // Constructor
     public Elevator(int maxCapacity) {
         this.currentFloor = 0;
         this.state = ElevatorState.IDLE;
@@ -41,6 +44,12 @@ public class Elevator {
         this.extPanel = new ExternalPanel();
     }
 
+    // ==================== Core Elevator Operations ====================
+
+    /**
+     * Main elevator movement logic that handles floor transitions, passenger boarding,
+     * and direction changes based on requests
+     */
     public void move(Building building, Simulator simulator) {
         long startTime = System.nanoTime();
 
@@ -95,13 +104,122 @@ public class Elevator {
         int minutes = (int) (durationInSeconds / 60);
         int seconds = (int) (durationInSeconds % 60);
         System.out.printf("\nTotal Travel Time: %02dmin%02ds %n", minutes, seconds);
-        System.out.printf("Energia Consumida: %.2f unidades %n", energyUsed);
+        System.out.printf("Energy Consumed: %.2f units %n", energyUsed);
     }
 
-    private boolean isWithinBounds(Building building) {
-        return currentFloor >= 0 && currentFloor < building.getTotalFloors();
+    /**
+     * Stops the elevator and sets state to IDLE
+     */
+    private void stopElevator() {
+        state = ElevatorState.IDLE;
     }
 
+    // ==================== Passenger Handling ====================
+
+    /**
+     * Handles passenger boarding and exiting at current floor
+     */
+    public void handleDoorsAtCurrentFloor(UserQueue currentUsers, Floor floor) {
+        intPanel.detectExitRequests(currentUsers, this.currentFloor);
+        boardPassengers(floor);
+    }
+
+    /**
+     * Boards passengers from current floor into elevator
+     */
+    private void boardPassengers(Floor floor) {
+        UserQueue floorQueue = floor.getUsers();
+        while (!floorQueue.isEmpty() && currentUsers.getSize() < maxCapacity) {
+            currentUsers.append(floorQueue.removeFirst());
+        }
+    }
+
+    // ==================== Request Detection ====================
+
+    /**
+     * Checks if there are any requests above current floor
+     */
+    public boolean requestsAbove(Building building) {
+        for (int i = currentFloor + 1; i < building.getTotalFloors(); i++) {
+            UserQueue users = building.getFloor(i).getUsers();
+            if (users != null && !users.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if there are any requests below current floor
+     */
+    public boolean requestsBelow(Building building) {
+        for (int i = 0; i < currentFloor; i++) {
+            UserQueue users = building.getFloor(i).getUsers();
+            if (users != null) {
+                for (User user : users) {
+                    if (user != null && !user.isUp()) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if there are requests in current travel direction
+     */
+    private boolean hasRequestsInCurrentDirection(Building building, int directionCode) {
+        return (directionCode > 0 && (requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor))) ||
+                (directionCode < 0 && (requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor)));
+    }
+
+    /**
+     * Checks if there are requests in opposite travel direction
+     */
+    private boolean hasRequestsInOppositeDirection(Building building, int directionCode) {
+        return (directionCode > 0 && (requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor))) ||
+                (directionCode < 0 && (requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor)));
+    }
+
+    // ==================== Simulation Helpers ====================
+
+    /**
+     * Simulates door opening/closing operation
+     */
+    private void simulateDoorOperation() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
+     * Simulates passenger boarding/exiting process
+     */
+    private void simulatePassengerExchange() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
+     * Simulates travel time between floors
+     */
+    private void simulateTravelBetweenFloors() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    // ==================== Status Reporting ====================
+
+    /**
+     * Logs current elevator status to console
+     */
     private void logElevatorStatus(String phase) {
         if (phase.equals("Before")) {
             System.out.println("\n================== Elevator Status ==================");
@@ -131,106 +249,26 @@ public class Elevator {
         }
     }
 
-    private boolean hasRequestsInCurrentDirection(Building building, int directionCode) {
-        return (directionCode > 0 && (requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor))) ||
-                (directionCode < 0 && (requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor)));
+    // ==================== Utility Methods ====================
+
+    /**
+     * Checks if current floor is within building bounds
+     */
+    private boolean isWithinBounds(Building building) {
+        return currentFloor >= 0 && currentFloor < building.getTotalFloors();
     }
 
-    private boolean hasRequestsInOppositeDirection(Building building, int directionCode) {
-        return (directionCode > 0 && (requestsBelow(building) || intPanel.insideWantsToGoDown(currentUsers, currentFloor))) ||
-                (directionCode < 0 && (requestsAbove(building) || intPanel.insideWantsToGoUp(currentUsers, currentFloor)));
-    }
-
-    private void stopElevator() {
-        state = ElevatorState.IDLE;
-    }
-
-    public void handleDoorsAtCurrentFloor(UserQueue currentUsers, Floor floor) {
-        intPanel.detectExitRequests(currentUsers, this.currentFloor);
-        boardPassengers(floor);
-    }
-
-    private void boardPassengers(Floor floor) {
-        UserQueue floorQueue = floor.getUsers();
-        while (!floorQueue.isEmpty() && currentUsers.getSize() < maxCapacity) {
-            currentUsers.append(floorQueue.removeFirst());
-        }
-    }
-
-    public boolean requestsAbove(Building building) {
-        for (int i = currentFloor + 1; i < building.getTotalFloors(); i++) {
-            UserQueue users = building.getFloor(i).getUsers();
-            if (users != null && !users.isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean requestsBelow(Building building) {
-        for (int i = 0; i < currentFloor; i++) {
-            UserQueue users = building.getFloor(i).getUsers();
-            if (users != null) {
-                for (User user : users) {
-                    if (user != null && !user.isUp()) return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void simulateDoorOperation() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    private void simulatePassengerExchange() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    private void simulateTravelBetweenFloors() {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    // Getters and Setters
+    // ==================== Getters ====================
 
     public int getCurrentFloor() {
         return currentFloor;
-    }
-
-    public void setCurrentFloor(int currentFloor) {
-        this.currentFloor = currentFloor;
     }
 
     public UserQueue getCurrentUsers() {
         return currentUsers;
     }
 
-    public void setCurrentUsers(UserQueue currentUsers) {
-        this.currentUsers = currentUsers;
-    }
-
     public ElevatorState getState() {
         return state;
     }
-
-    public void setState(ElevatorState state) {
-        this.state = state;
-    }
-
-    public int getMaxCapacity() {
-        return maxCapacity;
-    }
-
 }

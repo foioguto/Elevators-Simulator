@@ -1,24 +1,14 @@
 package run.panel;
 import run.model.UserQueue;
 
-
-/**
- * InternalPanel is responsible for handling internal elevator requests
- * made by passengers already inside the elevator.
- */
 public class InternalPanel {
 
+    // ==================== Constructor ====================
     public InternalPanel() {
         // No specific initialization required
     }
 
-    /**
-     * Checks if any passenger inside the elevator wants to exit at the current floor.
-     *
-     * @param currentUsers List of users currently in the elevator.
-     * @param actualFloor The current floor of the elevator.
-     * @return true if at least one user wants to exit here.
-     */
+    // ==================== Exit Request Methods ====================
     public boolean wantsToExitHere(UserQueue currentUsers, int actualFloor) {
         UserQueue.UserNode current = currentUsers.getHead();
 
@@ -32,52 +22,6 @@ public class InternalPanel {
         return false;
     }
 
-    /**
-     * Checks if any passenger inside the elevator wants to go to a higher floor.
-     *
-     * @param currentUsers List of users currently in the elevator.
-     * @param currentFloor The current floor of the elevator.
-     * @return true if at least one user wants to go up.
-     */
-    public boolean insideWantsToGoUp(UserQueue currentUsers, int currentFloor) {
-        UserQueue.UserNode current = currentUsers.getHead();
-
-        while (current != null) {
-            if (current.user.getNextFloor() > currentFloor) {
-                return true;
-            }
-            current = current.next;
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if any passenger inside the elevator wants to go to a lower floor.
-     *
-     * @param currentUsers List of users currently in the elevator.
-     * @param currentFloor The current floor of the elevator.
-     * @return true if at least one user wants to go down.
-     */
-    public boolean insideWantsToGoDown(UserQueue currentUsers, int currentFloor) {
-        UserQueue.UserNode current = currentUsers.getHead();
-
-        while (current != null) {
-            if (current.user.getNextFloor() < currentFloor) {
-                return true;
-            }
-            current = current.next;
-        }
-
-        return false;
-    }
-
-    /**
-     * Removes users who requested to exit at the current floor.
-     *
-     * @param currentUsers List of users currently in the elevator.
-     * @param currentFloor The current floor of the elevator.
-     */
     public void detectExitRequests(UserQueue currentUsers, int currentFloor) {
         UserQueue.UserNode current = currentUsers.getHead();
         UserQueue.UserNode prev = null;
@@ -101,5 +45,32 @@ public class InternalPanel {
                 current = current.next;
             }
         }
+    }
+
+    // ==================== Direction Request Methods ====================
+    public boolean insideWantsToGoUp(UserQueue currentUsers, int currentFloor) {
+        UserQueue.UserNode current = currentUsers.getHead();
+
+        while (current != null) {
+            if (current.user.getNextFloor() > currentFloor) {
+                return true;
+            }
+            current = current.next;
+        }
+
+        return false;
+    }
+
+    public boolean insideWantsToGoDown(UserQueue currentUsers, int currentFloor) {
+        UserQueue.UserNode current = currentUsers.getHead();
+
+        while (current != null) {
+            if (current.user.getNextFloor() < currentFloor) {
+                return true;
+            }
+            current = current.next;
+        }
+
+        return false;
     }
 }
