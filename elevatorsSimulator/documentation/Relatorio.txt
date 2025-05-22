@@ -1,0 +1,70 @@
+Relatório do Sistema de Controle de Elevadores
+=============================================
+
+1. Introdução
+-------------
+Este projeto implementa um sistema de controle para múltiplos elevadores em um prédio, com simulação de movimentos, gerenciamento de usuários e algoritmos de decisão de movimento. O sistema foi desenvolvido em Java e enfrentou desafios significativos na implementação do gerenciamento concorrente de múltiplos elevadores e na sincronização do tempo de operação.
+
+2. Dificuldades Encontradas
+---------------------------
+- Multi-elevadores: A coordenação entre elevadores para evitar conflitos de chamadas e otimizar o atendimento foi complexa
+- Gerenciamento de tempo: Sincronização entre tempo simulado e tempo real de execução
+- Prioridades: Implementação da lógica de prioridade de usuários (ex.: idosos)
+
+3. Funcionalidades por Classe
+-----------------------------
+
+Building:
+- Representa o prédio
+- Gerencia andares e elevadores
+- Métodos principais: getFloor(), hasRequestsAtFloor()
+
+Floor:
+- Controla um andar específico
+- Gerencia usuários esperando e painel externo
+- Métodos principais: hasRequests(), bringElevatorToFloor()
+
+Elevator:
+- Simula comportamento do elevador
+- Controla movimento, portas e capacidade
+- Métodos principais: move(), handleStopAtFloor()
+
+ElevatorController:
+- Implementa algoritmos de decisão
+- Escolhe próximo andar
+- Métodos principais: decideNextFloor()
+
+UserQueue:
+- Gerencia filas prioritárias
+- Métodos principais: append(), removeFirst()
+
+4. Lógica de Operação
+---------------------
+1. Usuários solicitam elevadores pelo painel externo
+2. ElevatorController calcula próximo andar
+3. Elevador move-se parando quando:
+   - Há usuários para embarcar/desembarcar
+   - Alcança destino final
+4. Portas abrem/fecham com tempo simulado
+
+5. Algoritmos Implementados
+---------------------------
+- SCAN: Varre andares em uma direção até o fim
+- Prioridade: Usuários com valor mais baixo embarcam primeiro
+
+6. Métricas Coletadas
+---------------------
+- Energia consumida: totalEnergy
+- Tempo total: System.nanoTime()
+
+7. Conclusões
+------------
+Sistema atende requisitos básicos, com possibilidades de:
+- Melhor controle centralizado
+- Novos algoritmos como SSTF
+- Interface gráfica futura
+
+8. Anexos
+---------
+- Diagrama de classes
+- Exemplos de saída do console
