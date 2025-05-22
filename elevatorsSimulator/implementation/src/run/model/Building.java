@@ -1,4 +1,4 @@
-package run;
+package run.model;
 
 public class Building {
     private int totalFloors;

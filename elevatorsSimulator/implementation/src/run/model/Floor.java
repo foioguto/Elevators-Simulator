@@ -1,4 +1,6 @@
-package run;
+package run.model;
+
+import run.panel.ExternalPanel;
 
 public class Floor {
     private int floor;

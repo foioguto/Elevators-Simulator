@@ -1,4 +1,8 @@
-package run;
+package run.model;
+
+import run.panel.ExternalPanel;
+import run.panel.InternalPanel;
+import run.simulator.Simulator;
 
 import java.util.Random;
 

@@ -1,4 +1,6 @@
 package run;
+import run.simulator.Simulator;
+
 import java.util.Scanner;
 
 public class Main {

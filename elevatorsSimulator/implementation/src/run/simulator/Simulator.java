@@ -1,4 +1,6 @@
-package run;
+package run.simulator;
+
+import run.model.*;
 
 import java.util.Random;
 

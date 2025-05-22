@@ -1,4 +1,5 @@
-package run;
+package run.panel;
+import run.model.UserQueue;
 
 
 /**

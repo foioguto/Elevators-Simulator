@@ -1,11 +1,11 @@
-package run;
+package run.model;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class UserQueue implements Iterable<User> {
+public class UserQueue implements Iterable<User>{
 
-    static class UserNode {
+    public class UserNode {
         public User user;
         public UserNode next;
         public UserNode prev;

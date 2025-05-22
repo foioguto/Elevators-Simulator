@@ -1,4 +1,9 @@
-package run;
+package run.panel;
+
+import run.model.Building;
+import run.model.Elevator;
+import run.model.Floor;
+import run.model.User;
 
 public class ExternalPanel {
 
