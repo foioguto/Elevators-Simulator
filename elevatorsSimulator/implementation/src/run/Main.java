@@ -6,19 +6,19 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Simulator simulator = new Simulator();
 
-        System.out.println("=== CONFIGURAÇÃO DO PRÉDIO E ELEVADOR ===");
+        System.out.println("=== ELEVATOR PARAMETERS ===");
 
-        System.out.print("Digite o número de andares do prédio: ");
+        System.out.print("Number of floors in the building: ");
         int numFloors = scanner.nextInt();
 
-        System.out.print("Digite a capacidade máxima do elevador: ");
+        System.out.print("Maximum capacity of the elevator: ");
         int numElevators = scanner.nextInt();
 
-        System.out.print("Digite o número de execuções da simulação: ");
-        int numRuns = scanner.nextInt();
-
-        System.out.println("Digite o horário da simulação: ");
+        System.out.print("Simulation time: ");
         int hours = scanner.nextInt();
+
+        System.out.print("Number of simulation runs: ");
+        int numRuns = scanner.nextInt();
 
         simulator.startBuildingManual(numFloors);
         simulator.setElevators(numElevators);

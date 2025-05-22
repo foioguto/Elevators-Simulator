@@ -9,6 +9,8 @@ public class Elevator {
     private ElevatorState state;
     private UserQueue currentUsers;
     private int currentFloor;
+    private double energyUsed = 0.0;
+    double simulatedTime = 0.0;
 
     public enum ElevatorState {
         IDLE(0),
@@ -76,12 +78,20 @@ public class Elevator {
             }
 
             simulateTravelBetweenFloors();
+            if (directionCode > 0) {
+                energyUsed += 2.0;
+            } else {
+                energyUsed += 1.2;
+            }
             currentFloor += directionCode;
         }
 
         long endTime = System.nanoTime();
-        double durationInSeconds = (endTime - startTime) / 1_000_000_000.0;
-        System.out.printf("\n=== Total Travel Time: %.3f seconds ===%n", durationInSeconds);
+        double durationInSeconds = ((endTime - startTime) / 1_000_000_000.0)*3;
+        int minutes = (int) (durationInSeconds / 60);
+        int seconds = (int) (durationInSeconds % 60);
+        System.out.printf("\nTotal Travel Time: %02dmin%02ds %n", minutes, seconds);
+        System.out.printf("Energia Consumida: %.2f unidades %n", energyUsed);
     }
 
     private boolean isWithinBounds(Building building) {

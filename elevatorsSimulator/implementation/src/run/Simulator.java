@@ -96,7 +96,7 @@ public class Simulator {
         Floor[] floors = building.getFloors();
 
         for (Floor floor : floors) {
-            if (random.nextDouble() < 0.3) {
+            if (random.nextDouble() < 0.4) {
                 int currentFloor = floor.getFloor();
                 UserQueue existingQueue = floor.getUsers();
 
@@ -201,7 +201,7 @@ public class Simulator {
             System.out.println();
         }
 
-        System.out.println("==================================\n");
+        System.out.println("==========================\n");
     }
 
 }
