@@ -44,4 +44,8 @@ public class Floor {
         return extPanel;
     }
 
+    public int getUserCount() {
+        return users.getSize();
+    }
+
 }

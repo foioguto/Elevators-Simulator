@@ -1,6 +1,7 @@
 package run;
 import config.ElevatorController;
 import config.Parameters;
+import run.dataStructure.Array;
 import run.dataStructure.UserQueue;
 import run.panels.InternalPanel;
 
@@ -16,6 +17,7 @@ public class Elevator implements Runnable{
     private int totalTime;
     private ElevatorController elevatorController;
     private volatile boolean running = true; // controls the loop thread
+    private Array<ElevatorListener> listeners;
 
 
     public enum ElevatorState {
@@ -44,6 +46,7 @@ public class Elevator implements Runnable{
         this.totalTime = 0;
         this.elevatorNumber = elevatorNumber;
         this.setElevatorController(ElevatorController.chooseHeuristic());
+        listeners = new Array<>(100);
     }
 
     public void move(Building building) {
@@ -152,6 +155,17 @@ public class Elevator implements Runnable{
         return false;
     }
 
+    public void addListener(ElevatorListener listener) {
+        listeners.append(listener);
+    }
+
+    private void notifyListeners() {
+        for (int i = 0;i<listeners.size();i++) {
+            listeners.get(i).onElevatorMoved(elevatorNumber, currentFloor, state);
+            listeners.get(i).onUsersChanged(elevatorNumber, currentUsers, currentFloor);
+        }
+    }
+
     private void simulateDoorOperation() {
         try {
             Thread.sleep(Parameters.DELAY);
@@ -253,6 +267,7 @@ public class Elevator implements Runnable{
     public void run() {
         while (running) {
             move(this.building);
+            notifyListeners();
         }
     }
 }

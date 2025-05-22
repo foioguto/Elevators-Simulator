@@ -1,5 +1,6 @@
 package simulator.events;
 
+import gui.BuildingVisualization;
 import run.Building;
 import run.Elevator;
 import run.dataStructure.Array;

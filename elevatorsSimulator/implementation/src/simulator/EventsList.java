@@ -1,11 +1,15 @@
 package simulator;
 
+import gui.BuildingVisualization;
 import run.Building;
+import run.Elevator;
 import run.dataStructure.Array;
 import config.Parameters;
 import simulator.events.BuildingEvents;
 import simulator.events.ElevatorsEvents;
 import simulator.events.UserEvents;
+
+import javax.swing.*;
 
 /**
  * Manages a list of simulation events and coordinates their execution.
@@ -95,6 +99,23 @@ public class EventsList {
         this.setEvent("setUsersBuilding");
         this.callEvent();
 
+        BuildingVisualization visualization = new BuildingVisualization();
+
+        SwingUtilities.invokeLater(() -> {
+            visualization.visualizeBuilding(building);
+        });
+
+        new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                visualization.onElevatorMoved(1, i, Elevator.ElevatorState.UP);
+                try { Thread.sleep(1000); } catch (Exception e) {}
+            }
+            for (int i = 4; i >= 0; i--) {
+                visualization.onElevatorMoved(1, i, Elevator.ElevatorState.DOWN);
+                try { Thread.sleep(1000); } catch (Exception e) {}
+            }
+        }).start();
+
         this.setEvent("printBuildingState");
         this.callEvent();
 
@@ -128,6 +149,7 @@ public class EventsList {
         
         this.setEvent("stopAllElevators");
         this.callEvent();
+
     }
 
 }
