@@ -5,7 +5,7 @@ import run.panel.ExternalPanel;
 public class Floor {
     // Class fields
     private final int floor;
-    private UserQueue users;
+    private UserList users;
     private final ExternalPanel extPanel;
 
     // ==================== Constructor ====================
@@ -16,7 +16,7 @@ public class Floor {
      */
     public Floor(int floor) {
         this.floor = floor;
-        this.users = new UserQueue();
+        this.users = new UserList();
         this.extPanel = new ExternalPanel();
     }
 
@@ -25,7 +25,7 @@ public class Floor {
     /**
      * Replaces the current user queue with new set of users
      */
-    public void setUsers(UserQueue users) {
+    public void setUsers(UserList users) {
         this.users = users;
     }
 
@@ -41,7 +41,7 @@ public class Floor {
     /**
      * @return Queue of users waiting on this floor
      */
-    public UserQueue getUsers() {
+    public UserList getUsers() {
         return users;
     }
 

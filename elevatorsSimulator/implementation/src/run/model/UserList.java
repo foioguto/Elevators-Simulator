@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
  * A doubly-linked list implementation for managing queues of Users
  * Supports standard queue operations and iteration
  */
-public class UserQueue implements Iterable<User> {
+public class UserList implements Iterable<User> {
 
     // ==================== Inner Node Class ====================
 
@@ -40,7 +40,7 @@ public class UserQueue implements Iterable<User> {
     /**
      * Creates an empty UserQueue
      */
-    public UserQueue() {
+    public UserList() {
         head = null;
         tail = null;
         size = 0;

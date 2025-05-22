@@ -29,7 +29,7 @@ public class Elevator {
     private final InternalPanel intPanel;
     private final ExternalPanel extPanel;
     private ElevatorState state;
-    private UserQueue currentUsers;
+    private UserList currentUsers;
     private int currentFloor;
     private double energyUsed = 0.0;
     double simulatedTime = 0.0;
@@ -39,7 +39,7 @@ public class Elevator {
         this.currentFloor = 0;
         this.state = ElevatorState.IDLE;
         this.maxCapacity = maxCapacity;
-        this.currentUsers = new UserQueue();
+        this.currentUsers = new UserList();
         this.intPanel = new InternalPanel();
         this.extPanel = new ExternalPanel();
     }
@@ -119,7 +119,7 @@ public class Elevator {
     /**
      * Handles passenger boarding and exiting at current floor
      */
-    public void handleDoorsAtCurrentFloor(UserQueue currentUsers, Floor floor) {
+    public void handleDoorsAtCurrentFloor(UserList currentUsers, Floor floor) {
         intPanel.detectExitRequests(currentUsers, this.currentFloor);
         boardPassengers(floor);
     }
@@ -128,7 +128,7 @@ public class Elevator {
      * Boards passengers from current floor into elevator
      */
     private void boardPassengers(Floor floor) {
-        UserQueue floorQueue = floor.getUsers();
+        UserList floorQueue = floor.getUsers();
         while (!floorQueue.isEmpty() && currentUsers.getSize() < maxCapacity) {
             currentUsers.append(floorQueue.removeFirst());
         }
@@ -141,7 +141,7 @@ public class Elevator {
      */
     public boolean requestsAbove(Building building) {
         for (int i = currentFloor + 1; i < building.getTotalFloors(); i++) {
-            UserQueue users = building.getFloor(i).getUsers();
+            UserList users = building.getFloor(i).getUsers();
             if (users != null && !users.isEmpty()) {
                 return true;
             }
@@ -154,7 +154,7 @@ public class Elevator {
      */
     public boolean requestsBelow(Building building) {
         for (int i = 0; i < currentFloor; i++) {
-            UserQueue users = building.getFloor(i).getUsers();
+            UserList users = building.getFloor(i).getUsers();
             if (users != null) {
                 for (User user : users) {
                     if (user != null && !user.isUp()) return true;
@@ -264,7 +264,7 @@ public class Elevator {
         return currentFloor;
     }
 
-    public UserQueue getCurrentUsers() {
+    public UserList getCurrentUsers() {
         return currentUsers;
     }
 

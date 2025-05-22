@@ -1,5 +1,5 @@
 package run.panel;
-import run.model.UserQueue;
+import run.model.UserList;
 
 public class InternalPanel {
 
@@ -9,8 +9,8 @@ public class InternalPanel {
     }
 
     // ==================== Exit Request Methods ====================
-    public boolean wantsToExitHere(UserQueue currentUsers, int actualFloor) {
-        UserQueue.UserNode current = currentUsers.getHead();
+    public boolean wantsToExitHere(UserList currentUsers, int actualFloor) {
+        UserList.UserNode current = currentUsers.getHead();
 
         while (current != null) {
             if (current.user.getNextFloor() == actualFloor) {
@@ -22,9 +22,9 @@ public class InternalPanel {
         return false;
     }
 
-    public void detectExitRequests(UserQueue currentUsers, int currentFloor) {
-        UserQueue.UserNode current = currentUsers.getHead();
-        UserQueue.UserNode prev = null;
+    public void detectExitRequests(UserList currentUsers, int currentFloor) {
+        UserList.UserNode current = currentUsers.getHead();
+        UserList.UserNode prev = null;
 
         while (current != null) {
             if (current.user.getNextFloor() == currentFloor) {
@@ -48,8 +48,8 @@ public class InternalPanel {
     }
 
     // ==================== Direction Request Methods ====================
-    public boolean insideWantsToGoUp(UserQueue currentUsers, int currentFloor) {
-        UserQueue.UserNode current = currentUsers.getHead();
+    public boolean insideWantsToGoUp(UserList currentUsers, int currentFloor) {
+        UserList.UserNode current = currentUsers.getHead();
 
         while (current != null) {
             if (current.user.getNextFloor() > currentFloor) {
@@ -61,8 +61,8 @@ public class InternalPanel {
         return false;
     }
 
-    public boolean insideWantsToGoDown(UserQueue currentUsers, int currentFloor) {
-        UserQueue.UserNode current = currentUsers.getHead();
+    public boolean insideWantsToGoDown(UserList currentUsers, int currentFloor) {
+        UserList.UserNode current = currentUsers.getHead();
 
         while (current != null) {
             if (current.user.getNextFloor() < currentFloor) {

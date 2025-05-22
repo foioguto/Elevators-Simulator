@@ -1,26 +1,45 @@
 package run;
 import run.simulator.Simulator;
+import javax.swing.*;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
+        JFrame frame = new JFrame("Console GUI");
+        JTextArea textArea = new JTextArea(20, 50);
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+
+        frame.getContentPane().add(scrollPane);
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+
+        PrintStream printStream = new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) {
+                textArea.append(String.valueOf((char) b));
+                textArea.setCaretPosition(textArea.getDocument().getLength());
+            }
+        });
+
+        System.setOut(printStream);
+        System.setErr(printStream);
+
         Scanner scanner = new Scanner(System.in);
         Simulator simulator = new Simulator();
 
-        System.out.println("=== ELEVATOR PARAMETERS ===");
+        int numFloors = Integer.parseInt(JOptionPane.showInputDialog("Number of floors in the building: "));
 
-        System.out.print("Number of floors in the building: ");
-        int numFloors = scanner.nextInt();
+        int numElevators = Integer.parseInt(JOptionPane.showInputDialog("Maximum capacity of the elevator: "));
 
-        System.out.print("Maximum capacity of the elevator: ");
-        int numElevators = scanner.nextInt();
+        int hours = Integer.parseInt(JOptionPane.showInputDialog("Simulation Time: "));
 
-        System.out.print("Simulation time: ");
-        int hours = scanner.nextInt();
-
-        System.out.print("Number of simulation runs: ");
-        int numRuns = scanner.nextInt();
+        int numRuns = Integer.parseInt(JOptionPane.showInputDialog("Number of simulation runs: "));
 
         simulator.startBuildingManual(numFloors);
         simulator.setElevators(numElevators);

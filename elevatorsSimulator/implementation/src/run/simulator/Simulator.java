@@ -32,9 +32,9 @@ public class Simulator {
 
         for (Floor floor : floors) {
             int currentFloor = floor.getFloor();
-            UserQueue existingQueue = floor.getUsers();
+            UserList existingQueue = floor.getUsers();
             if (existingQueue == null) {
-                existingQueue = new UserQueue();
+                existingQueue = new UserList();
                 floor.setUsers(existingQueue);
             }
 
@@ -62,9 +62,9 @@ public class Simulator {
 
         for (Floor floor : floors) {
             int currentFloor = floor.getFloor();
-            UserQueue existingQueue = floor.getUsers();
+            UserList existingQueue = floor.getUsers();
             if (existingQueue == null) {
-                existingQueue = new UserQueue();
+                existingQueue = new UserList();
                 floor.setUsers(existingQueue);
             }
 
@@ -92,7 +92,7 @@ public class Simulator {
         for (Floor floor : floors) {
             if (random.nextDouble() < 0.4) {
                 int currentFloor = floor.getFloor();
-                UserQueue existingQueue = floor.getUsers();
+                UserList existingQueue = floor.getUsers();
 
                 int numberOfUsers = random.nextInt(2);
 
@@ -166,9 +166,9 @@ public class Simulator {
 
         for (int floorIndex = building.getTotalFloors() - 1; floorIndex >= 0; floorIndex--) {
             Floor floor = building.getFloor(floorIndex);
-            UserQueue users = floor.getUsers();
+            UserList users = floor.getUsers();
 
-            System.out.printf("Floor %2d | Users: ", floorIndex);
+            System.out.printf("Floor %2d | Users Demands: ", floorIndex);
             if (users.getSize() == 0) {
                 System.out.print("None");
             } else {
