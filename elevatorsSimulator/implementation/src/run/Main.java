@@ -1,6 +1,7 @@
 package run;
 import run.simulator.Simulator;
 import javax.swing.*;
+import java.awt.*;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -12,6 +13,11 @@ public class Main {
         JFrame frame = new JFrame("Console GUI");
         JTextArea textArea = new JTextArea(20, 50);
         textArea.setEditable(false);
+
+        textArea.setBackground(Color.DARK_GRAY);       // Fundo preto
+        textArea.setForeground(Color.ORANGE);       // Texto verde
+        textArea.setFont(new Font("Consolas", Font.PLAIN, 14)); // Fonte monoespaçada
+
         JScrollPane scrollPane = new JScrollPane(textArea);
 
         frame.getContentPane().add(scrollPane);

@@ -136,7 +136,7 @@ public class UserList implements Iterable<User> {
      * Decreases the list size by 1.
      * Should be called after removal operations.
      */
-    protected void decrementSize() {
+    public void decrementSize() {
         this.size--;
     }
 
